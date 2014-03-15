@@ -1,0 +1,1361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>Tommie Jones</title>
+ <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
+ <link href="http://www.atlantageek.com/"/>
+ <updated>2014-01-11T16:47:10-05:00</updated>
+ <id>http://www.atlantageek.com</id>
+ <author>
+   <name>Tommie Jones</name>
+ </author>
+ 
+ 
+ <entry>
+   <title>Cheatsheet for Flot</title>
+   <link href="http://www.atlantageek.com/2014/01/11/cheatsheet-for-flot/"/>
+   <updated>2014-01-11T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2014/01/11/cheatsheet-for-flot</id>
+   <content type="html">&lt;p&gt;$.plot() is the main function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var plot = $.plot(placeholder,data,options)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Two ways to specifiy div tag&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var plot = $.plot(&quot;#placeholder&quot;,data,options)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var plot = $(&quot;#placeholder&quot;).plot(data,options)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Data Format
+How to format the data.
+data = rawdata or multiple_rawdata or object or multiple objects
+The most basic format is an array of arrays.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var rawdata = [ [x1,y1], [x2,y2], [x3,y3], [x4,y4] ];
+var rawdata = [ [0,10], [1,11], [2,12], [3,13] ];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Multiple Series are used if you want more than one line on your graph&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;multiple_rawdata = [rawdata,rawdata,rawdata];
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The object looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var object = {
+        color: color or number
+        data: rawdata
+        label: string
+        lines: specific lines options
+        bars: specific bars options
+        points: specific points options
+        xaxis: number
+        yaxis: number
+        clickable: boolean
+        hoverable: boolean
+        shadowSize: number
+        highlightColor: color or number
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And multiple objects look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var object = [object1,object2,object3]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;99% of the time you are just using the objects to link to a label&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[ { label: &quot;Foo&quot;, data: [ [10, 1], [17, -14], [30, 5] ] },
+{ label: &quot;Bar&quot;, data: [ [11, 13], [19, 11], [30, -7] ] }
+]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt; Options&lt;/p&gt;
+
+&lt;p&gt;Example of options&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var options = {
+    series: {
+        lines, points, bars: {
+        show: boolean
+        lineWidth: number
+        fill: boolean or number
+        fillColor: null or color/gradient
+    }
+    lines, bars: {
+            zero: boolean
+        }
+        points: {
+            radius: number
+            symbol: &quot;circle&quot; or function
+        }
+        bars: {
+            barWidth: number
+            align: &quot;left&quot;, &quot;right&quot; or &quot;center&quot;
+            horizontal: boolean
+        }
+        lines: {
+            steps: boolean
+        }
+        shadowSize: number
+        highlightColor: color or number
+}// Series Option
+colors: [ color1, color2, ... ]
+legend: {
+        show: boolean
+        labelFormatter: null or (fn: string, series object -&amp;gt; string)
+        labelBoxBorderColor: color
+        noColumns: number
+        position: &quot;ne&quot; or &quot;nw&quot; or &quot;se&quot; or &quot;sw&quot;
+        margin: number of pixels or [x margin, y margin]
+        backgroundColor: null or color
+        backgroundOpacity: number between 0 and 1
+        container: null or jQuery object/DOM element/jQuery expression
+        sorted: null/false, true, &quot;ascending&quot;, &quot;descending&quot;, &quot;reverse&quot;, or a comparator
+    },
+ xaxis, yaxis: {
+      show: null or true/false
+      position: &quot;bottom&quot; or &quot;top&quot; or &quot;left&quot; or &quot;right&quot;
+      mode: null or &quot;time&quot; (&quot;time&quot; requires jquery.flot.time.js plugin)
+      timezone: null, &quot;browser&quot; or timezone (only makes sense for mode: &quot;time&quot;)
+
+      color: null or color spec
+      tickColor: null or color spec
+      font: null or font spec object
+
+      min: null or number
+      max: null or number
+      autoscaleMargin: null or number
+
+      transform: null or fn: number -&amp;gt; number
+      inverseTransform: null or fn: number -&amp;gt; number
+
+      ticks: null or number or ticks array or (fn: axis -&amp;gt; ticks array)
+      tickSize: number or array
+      minTickSize: number or array
+      tickFormatter: (fn: number, object -&amp;gt; string) or string
+      tickDecimals: null or number
+
+      labelWidth: null or number
+      labelHeight: null or number
+      reserveSpace: null or true
+      tickLength: null or number
+      alignTicksWithAxis: null or number
+   }
+    grid: {
+        show: boolean
+        aboveData: boolean
+        color: color
+        backgroundColor: color/gradient or null
+        margin: number or margin object
+        labelMargin: number
+        axisMargin: number
+        markings: array of markings or (fn: axes -&amp;gt; array of markings)
+        borderWidth: number or object with &quot;top&quot;, &quot;right&quot;, &quot;bottom&quot; and &quot;left&quot; properties with different widths
+        borderColor: color or null or object with &quot;top&quot;, &quot;right&quot;, &quot;bottom&quot; and &quot;left&quot; properties with different colors
+        minBorderMargin: number or null
+        clickable: boolean
+        hoverable: boolean
+        autoHighlight: boolean
+        mouseActiveRadius: number
+    }
+    interaction: {
+        redrawOverlayInterval: number or -1
+    }
+    margin: {
+       top: top margin in pixels
+        left: left margin in pixels
+        bottom: bottom margin in pixels
+        right: right margin in pixels
+    }
+    markings: [ { xaxis: { from: 0, to: 2 }, yaxis: { from: 10, to: 10 }, color: &quot;#bb0000&quot; }, ... ]
+    hooks: {
+        processOptions: function(plot, options)
+        processRawData: function(plot, series, data, datapoints)
+        processOffset: function(plot, offset)
+        drawBackground: function(plot, canvasContext)
+        drawSeries: function(plot, canvascontext, series)
+        draw: function(plot, canvascontext)
+        bindEvents: function(plot, eventHolder)
+        drawOverlay: function(plot, canvascontext)
+        shutdown function(plot, eventHolder)
+    };
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Methods&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;plot.hightlight(series, datapoint_index)
+plot.unhighlight(series, datapoint_index)
+plot.setData(data) - call draw after to update graph
+plot.setupGrid() 
+plot.draw() - redraw the plot canvas
+triggerRedrawOverlay() - force redrawing of overlays
+width()/height()
+offset() - offset is used in calculating mouse position in graphs
+pointOffset({x,y})- dataSpace -&amp;gt; div x,y
+resize() -&amp;gt; force canvas to fit size of div
+shutdown() -&amp;gt; internal function to disable all event handlers
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;debugging functions&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;getData()&lt;/li&gt;
+&lt;li&gt;getAxes()&lt;/li&gt;
+&lt;li&gt;getPlaceholder()&lt;/li&gt;
+&lt;li&gt;getCanvas()&lt;/li&gt;
+&lt;li&gt;getPlotOffset()&lt;/li&gt;
+&lt;li&gt;getOptions()&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Casing Up the Raspberry Pi, Part I</title>
+   <link href="http://www.atlantageek.com/2014/01/08/building-a-case-for-raspberrypi/"/>
+   <updated>2014-01-08T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2014/01/08/building-a-case-for-raspberrypi</id>
+   <content type="html">&lt;h1&gt;The Problem&lt;/h1&gt;
+
+&lt;p&gt;Raspberry Pi is a great little computer but easily the biggest weakness of the board is its power and/or usb ports. Imagine getting your new raspbery pi, unboxing it, plugging it in with the usb charge you stole from your kid&#39;s kindle, plugin your hdmi, keyboard and mouse and ..... nothing. Turns out a keyboard and a mouse can overwhelm your PI, and forget about that wifi adapter or the usb stick with all your rap mp3s. Youre just out of luck.&lt;/p&gt;
+
+&lt;p&gt;Eventually you will purchase a powered usb hub so your $35 computer is now $50 + stolen power supply.  Eventually your setup may look something like this.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/Raspberry-Pi-Nest.jpg&quot; alt=&quot;Raspberry Pi Nest&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Lovely isn&#39;t it??!&lt;/p&gt;
+
+&lt;p&gt;This gets annoying quickly. After searching for a case that had an embedded usb hub I was disappointed to come up with nothing. There are 30 or more different commercially available cases and not a single one has a built in hub.  Theres a &lt;a href=&quot;http://www.adafruit.com/blog/2012/10/19/raspberry-pi-case-with-an-integrated-usb-hub-piday-raspberrypi-raspberry_pi/&quot;&gt;home built project&lt;/a&gt; that looks cool. Or a year old &lt;a href=&quot;http://www.raspberrypi.org/phpBB3/viewtopic.php?t=29667&quot;&gt;empty promise&lt;/a&gt;. So I decided to build my own case with the plan being that its as simple and easily reproducable as possible.&lt;/p&gt;
+
+&lt;p&gt;So I&#39;ve been trying to think of an easy way to build this case. The issue with the raspberry pi is that unlike PC motherboards all ther ports are distributed around the board.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/RaspiModelB.png&quot; alt=&quot;Raspberry Pi Nest&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So the cases are built skin tight around the board.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/tightcase.jpg&quot; alt=&quot;Raspberry Pi Nest&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I wanted to do something different.  Not only did I want a usb hub but I was also inspired by RaspyFi, an excellent project, and wanted to embed the pi in a speaker. So at work&#39;s white elephant party I was able to snag this speaker&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/speaker.jpg&quot; alt=&quot;Speaker&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So Im not a wood worker. I don&#39;t have the patience for the detailed work it requires, I never had the coordination for it, I dont want to fill up my garage with thousands of dollars of tools and last of all I like having all my fingers.  However I do have a few basic things like a drill and bits.&lt;/p&gt;
+
+&lt;p&gt;Looking at this project what I decided I want to do is to pull the ports off the raspberry pi and usb hub and put them on the back of the speaker.  So this would require some cabling which isnt a problem.  The other issue is I cant cut a square hole to save my life. After thinking about it the solution was obvious.&lt;/p&gt;
+
+&lt;p&gt;CE Tech and Leviton both do these media wall ports for in wall cabling&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/hdmi.jpg&quot; alt=&quot;hdmi port&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;They also sell these wall plates.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/plate.jpg&quot; alt=&quot;wall plate&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So you can see where Im going with this.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/sofar.jpg&quot; alt=&quot;So far so good&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Home Depot did not have the usb ports.  I&#39;ve ordered a couple and when I get those I&#39;ll finish the case and post a cost breakdown.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Setup Script Login</title>
+   <link href="http://www.atlantageek.com/2014/01/01/setup-script-login/"/>
+   <updated>2014-01-01T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2014/01/01/setup-script-login</id>
+   <content type="html">&lt;p&gt;A recent trend is to build small headless computer systems based on linux. This has come from the ability to run linux on very small computers (in size and power) for very utilitarian tasks (routers, NAS, data collection nodes). However these use cases make it inconvient to connect a keyboard, mouse and monitor to the linux machine. Often its because the device may not have a video out. Or the device&#39;s use case  does not require a monitor/keyboard to be connected in its normal operations. So when maintenance and/or administrative processes are necessary you need to provide some sort of interface/UI. You can invest hours into developing a cool Web UI that a administrator uses once every 6 months but sometimes a menu driven terminal app could do the job.&lt;/p&gt;
+
+&lt;p&gt;So what are the reasons a terminal app would be preferred over a Web UI
+*  You have administrative duties that need to be kept away from general users.
+*  You dont want anyone accidently accessing the screen during the appliance&#39;s normal use.
+*  You have tasks that need to be completed before device is no the network (using keyboard/monitor )
+*  The tasks that are triggered may require a bit of time to complete (doing a backup.)
+*  You want something easily extendable.
+*  Your support team is getting tired of describing where the menu/dropdown/button is on the webpage
+*  Sometimes a simple question/answer text interface is best so the administrator can be lead through the configuration.&lt;/p&gt;
+
+&lt;p&gt;This article will describe how to setup a menu driven idiot proof terminal app.&lt;/p&gt;
+
+&lt;p&gt;The first thing you need is a setup script. Download this &lt;a href=&quot;/references/setup-wrapper.sh&quot;&gt;script&lt;/a&gt; as an example. When run from the command line the initial screen looks like this.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Thu Jan 2 00:35:02 EST 2014
+
+Welcome to your Admin console, please select an action.
+Please select action:
+
+1) Run Setup App
+2) Update Application
+3) Restart Server
+4) Configure Server Time
+5) Backup System
+80) Change Password
+90) exit
+ENTER YOUR SELECTION:
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is fine but you want this to be easy. You dont want the user having to go to a command line, find the script location and then run it.  A solution to this is for the script to be started as soon as the user logs into the system from the command line.  So first lets create a setup user and configure this script as his login shell.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp setup-shell.sh /usr/local/bin #Copy shell script to /usr/local/bin
+useradd setup -m -s /usr/local/bin/setup-shell.sh #create the setup user
+    passwd setup   #Configure the password for the setup user.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now when you login as the setup user you will be given a menu.  When you exit out of the script you will be thrown back to the login screen.&lt;/p&gt;
+
+&lt;p&gt;The last thing to do is give the setup user some privileges so that it can &#39;restart a server&#39; or &#39;configure the server time&#39;. If you refer back to the script you&#39;ll see that each command that needs root access is pre-pended with a &#39;sudo&#39; command. We can list these commands in the sudoers file so that the setup user can only run the necessary commands.&lt;/p&gt;
+
+&lt;p&gt;Here is the sudoers file I&#39;ve created to go with this setup_shell.sh script.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Cmnd_Aliases SETUPCMDS = /usr/bin/setup, /sbin/ifdown, /sbin/ifup, /usr/bin/yum, /sbin/service,/sbin/chkconfig, /bin/date
+setup   ALL=NOPASSWORD SETUPCMDS
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;SETUPCMDS is a list of all the commands setup needs acces to.
+the next line says that tue user setup can connect from any server (through telnet/ssh/putty) or the console and run any of the SETUPCMDS commands without typing in the password.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Useful Queries to admin postgres</title>
+   <link href="http://www.atlantageek.com/2013/12/31/useful-queries-to-admin-postgres/"/>
+   <updated>2013-12-31T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2013/12/31/useful-queries-to-admin-postgres</id>
+   <content type="html">&lt;p&gt;Here are some of my favorite postgres queries to help administrate postgres.&lt;/p&gt;
+
+&lt;h2&gt;Identify slowest running queries.&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;SELECT
+    pid,
+    current_timestamp - xact_start as xact_runtime,
+    query
+FROM pg_stat_activity
+ORDER BY xact_start;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;Identify existing locks in postgres, good for finding deadlocks.&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;SELECT pg_class.relname,pg_locks.* 
+FROM pg_class,pg_locks 
+WHERE pg_class.relfilenode=pg_locks.relation;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;See foreign key constraints.&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;SELECT c.constraint_name
+        , x.table_schema as schema_name
+        , x.table_name
+        , x.column_name
+        , y.table_schema as foreign_schema_name
+        , y.table_name as foreign_table_name
+        , y.column_name as foreign_column_name
+FROM information_schema.referential_constraints c
+    join information_schema.key_column_usage x
+        on x.constraint_name = c.constraint_name
+    join information_schema.key_column_usage y
+        on y.ordinal_position = x.position_in_unique_constraint
+        and y.constraint_name = c.unique_constraint_name
+    order by c.constraint_name, x.ordinal_position;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;Show active connections&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;SELECT count(*) 
+FROM pg_stat_activity;
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sharding a MultiTenant SaaS app</title>
+   <link href="http://www.atlantageek.com/2013/12/30/sharding-a-multitenant-saas/"/>
+   <updated>2013-12-30T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2013/12/30/sharding-a-multitenant-saas</id>
+   <content type="html">&lt;p&gt;You&#39;ve finally got some traction with your SaaS project.  Lots of large customers and things are moving along rather well. A few of your customers complain that the system is not as fast as it use to be but that&#39;s normal. You up the hardware, add a few indexes and things seem steady.
+All of a sudden your email/support staff is overwhelmed by customers complaining about 404 errors. You look and see that your web sessions are timing out and queries are starting to drag. Postgres Autovacuum is starting at the worse possible times and you are spending a lot of time babysitting your app instead of counting your money. You thought you had more time but now its obvious, its time to shard the database.&lt;/p&gt;
+
+&lt;p&gt;There are a few ways to shard the database. Some apps are sharded by time and others are sharded by grouping users. A multi-tenant app lends itself to being sharded by tenant. The idea being that each individual tenant would not want to share data with other tenant. (Notice I said tenant and not users. I assume that users who collaborate would be part of the same tenant.&lt;/p&gt;
+
+&lt;p&gt;There are also multiple solutions to how data is sharded. There are three approaches.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;webserver&lt;/li&gt;
+&lt;li&gt;app&lt;/li&gt;
+&lt;li&gt;database partitioning&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;Either solution requires several databases/tables for each shard.&lt;/p&gt;
+
+&lt;p&gt;Webserver would be assigning a tenant to a specific database/web server combination. This can work but its somewhat ugly. Basically when the user logs ont the app their server needs to be identified and all their work will be done on this server. nginx sticky-module comes in handy for this solution.&lt;/p&gt;
+
+&lt;p&gt;App level is a bit more messy. It requires the most code changes. When the customer logs in the database their db shard is determined and then all datarequests for this user goes through the tenant&#39;s shard.&lt;/p&gt;
+
+&lt;p&gt;Database partitioning approach is probably the best approach. The goal here is to split up the data across multiple tables but with minimal code changes. This is done by a combination of partitioning and postgres db triggers.&lt;/p&gt;
+
+&lt;p&gt;The focus will be on the Database partitioning approach.&lt;/p&gt;
+
+&lt;p&gt;Unlike other approaches to sharding, the database partitioning approach does not shard the whole database. Instead you identify certain tables that are the culprit in the drop of the performance and then use partitioning on that table. Partitioning is only beneficial for large tables. If the table is larger than the memory of your database machine then its a canidate for partitioning.&lt;/p&gt;
+
+&lt;p&gt;To demonstrate a technique assume that we are working on an accounting application. The largest table is the transaction table. The job_transaction table looks like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE SEQUENCE id_seq;
+CREATE TABLE job_transactions (id int NOT NULL DEFAULT nextval(&#39;id_seq&#39;), name varchar, description text, tenant_id integer);
+ALTER TABLE job_transactions_seq owned by job_transactions.id;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The job_transactions tabe probably already exists.  rename the old table to something else and create a new empty table with the old name.  We will transfer the data later.&lt;/p&gt;
+
+&lt;p&gt;The data needs to be split accross multiple database tables so its time to create those.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE TABLE job_Transactions0(CHECK ( (tenant_id % 0) = 0)) INHERITS (job_transactions);
+CREATE TABLE job_Transactions1(CHECK ( (tenant_id % 1) = 0)) INHERITS (job_transactions);
+CREATE TABLE job_Transactions2(CHECK ( (tenant_id % 2) = 0)) INHERITS (job_transactions);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So the data is split between these three tables. This uses the mod function to determine which partition. To truly leverage this functionality you might want to add tenant_id to all the indexes and all queries should have tenant_id as part of the query.&lt;/p&gt;
+
+&lt;p&gt;Now we need to create triggers so that any inserts into the job_transactiosn table will be put in the appropriate partition.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; CREATE OR REPLACE FUNCTION trace_insert()
+ RETURNS TRIGGER AS $$
+ BEGIN
+   IF ((NEW.id % 3) = 0 ) THEN
+      INSERT INTO job_transactions0 VALUES (NEW.*);
+   ELSEIF ((NEW.id % 3) = 1 ) THEN
+   IF INSERT INTO job_transactions1 VALUES (NEW.*);
+   ELSEIF ((NEW.id % 3) = 2 ) THEN
+      INSERT INTO job_transactions2 VALUES (NEW.*);
+   ELSE
+      RAISE EXCEPTION &#39;device_id out of range.  Fix the trace_insert_trigger() function!&#39;;
+   END IF;
+   RETURN NULL;
+ END;
+ $$
+ LANGUAGE plpgsql;
+
+ CREATE TRIGGER trace_insert_trigger
+   BEFORE INSERT ON trace_refs
+   FOR EACH ROW EXECUTE PROCEDURE trace_insert();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now any inserts into the job_transactions table will be deployed the the child partitions.  And querying for data in the original table will cause the code to be requested to the individual transactions.&lt;/p&gt;
+
+&lt;p&gt;One note, the queries that have the  tenant_id will be fast. Those without must query multiple database tables and kill the whole performance improvements will be killed.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Nodejs-and-LCDproc</title>
+   <link href="http://www.atlantageek.com/2013/12/29/nodejs-add-lcdproc/"/>
+   <updated>2013-12-29T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2013/12/29/nodejs-add-lcdproc</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/img/posts/IMG_20131230_003453.jpg&quot; alt=&quot;LCD display of bitcoin price&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I developed my first node.js module today.  Its called lcdproc-client and provides a client interface for lcdproc. For those not in the know, lcdproc is a tcp server that controls most lcd displays (not the monitors but the blocky text ones you see on media players.)&lt;/p&gt;
+
+&lt;p&gt;I wish these were more popular, In my opinion they should be on every desktop PC. On mine I wanted to display bitcoin prices  and I wanted to do it in either ruby or node.js. Ruby&#39;s library didnt work and I couldnt find one for node.js.  I did find one that worked in Perl but I didnt want to write perl code. Plus I had an idea that I might use this for a later raspberry pi project and node.js works well on node.js. I did use the perl code to capture the protocol to figure out how it worked.&lt;/p&gt;
+
+&lt;p&gt;Anyway the &lt;a href=&quot;https://npmjs.org/package/lcdproc-client&quot;&gt;lcdproc-client&lt;/a&gt; has been released so others can use lcdproc with node.js.  Also if you don&#39;t have a lcd screen you can use the curses simulation by installing lcdproc and running the daemon with curses LCD simulation (LCDd -d lis).&lt;/p&gt;
+
+&lt;p&gt;Below is the code for the BTC display on the LCD.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var Client = require(&#39;node-rest-client&#39;).Client;
+var LcdClient = require(&#39;lcdproc-client&#39;).LcdClient;
+
+lc = new LcdClient(13666,&#39;localhost&#39;);
+
+function get_bitcoin()
+{
+  console.log(&quot;Get Bitcoin&quot;);
+  client = new Client();
+  client.registerMethod(&quot;jsonMethod&quot;, &quot;http://blockchain.info/ticker&quot;, &quot;GET&quot;);
+  client.methods.jsonMethod(function(data, response){
+            // parsed response body as js object
+    var obj = JSON.parse(data);
+            buy = obj.USD[&#39;buy&#39;];
+            sell = obj.USD[&#39;sell&#39;];
+        lc.widget_val(&quot;first_line&quot;,1,1,&quot;BTC &quot; );
+        lc.widget_val(&quot;second_line&quot;,1,2,&quot;B:&quot; + buy + &quot; S:&quot; + sell);
+        });
+}
+
+
+lc.on(&#39;ready&#39;, function() {
+  console.log(&quot;AAA&quot;);
+  console.log(&quot;WIDTH: &quot; + lc.width);
+  console.log(&quot;HEIGHT: &quot; + lc.height);
+  lc.screen(&quot;bacon&quot;);
+  lc.widget(&quot;first_line&quot;);
+  lc.widget_val(&quot;first_line&quot;,1,1,&quot;This is a line&quot;);
+  lc.widget(&quot;second_line&quot;);
+  lc.widget_val(&quot;second_line&quot;,1,2,&quot;This is a second line&quot;);
+  get_bitcoin();
+  setInterval(get_bitcoin, 300000);
+});
+lc.init();
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Redesign of Wi-spy Web interface.</title>
+   <link href="http://www.atlantageek.com/2013/08/18/redesign-wi-spy-web-interface/"/>
+   <updated>2013-08-18T02:46:21Z</updated>
+   <id>http://www.atlantageek.com/2013/08/18/redesign-wi-spy-web-interface</id>
+   <content type="html">&lt;p&gt;So originally I wanted to build a web inteface for the wi-spy spectrum analyzer. I proved the concept with the first version.  You can watch the  &lt;a href=&quot;http://www.youtube.com/watch?v=jj9u6VtkM3Y&quot;&gt;short video&lt;/a&gt;
+yourself that goes over the design. The biggest problem with the application was that it required a lot of infrastructure.  It required a special verion of spec_Tool to collect the data, node.js to supply the web server and a redis daemon to act inbetween.  When I started adding code to store off historical data I realized I&#39;d need another technology such as tokyo cabinet and the like. This proved even more difficult because I need a locking mechanism between the reader and the writer.&lt;/p&gt;
+
+&lt;p&gt;Finally I decided that it was time to get to the basics.  The latest version of this tool is written totally in C (spectool_red) htat will collect data, supply the web interface and store the historical data in tokyo cabinet.  This is really only one executable.  More details can be found &lt;a href=&quot;https://github.com/atlantageek/websocketsa&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>DVRs for over the air TV</title>
+   <link href="http://www.atlantageek.com/2013/05/13/dvrs-for-over-the-air-tv/"/>
+   <updated>2013-05-13T02:46:21Z</updated>
+   <id>http://www.atlantageek.com/2013/05/13/dvrs-for-over-the-air-tv</id>
+   <content type="html">&lt;h1&gt;DVRs for over the air TV&lt;/h1&gt;
+
+&lt;p&gt;One of the advantages of cable service is something that is totally unrelated to their content.  The settop box is a great convience. The emergence of MSO provided DVRs has added a lot of value to their service. So if you really do want to cut the cord its time to consider how are you going to replace that $10/month leased settop box.&lt;/p&gt;
+
+&lt;p&gt;There are a couple of options. The grand-daddy of them  all is Tivo (Yes they’re still in business.) Tivo and ReplayTV(and they are not) invented the DVR business.  However Tivo is notorious for being expensive. Not just for the initial price ($149-349) but also the monthly charge $15/month.  You can also get a lifetime account for $500. (Thats a 3 year payback).&lt;br/&gt;
+Used Tivos with lifetime memberships can be a good deal off of ebay. You can pickup a series 2 Tivo (OK 8 years old) with a lifetime account for $100. But it should work well. The newer Tivos do more than TV though.  They do netflix, amazon and other stuff thats kind of cool if you dont have a smart tv or smart dvd player. But The monthly fee is what you were trying to get away from when you cut the cable cord.  Tivo really needs to rethink their target market.&lt;/p&gt;
+
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;DVR&lt;/th&gt;
+&lt;th&gt;Size&lt;/th&gt;
+&lt;th&gt;Price &lt;/th&gt;
+&lt;th&gt;Tuner Count &lt;/th&gt;
+&lt;th&gt; Notes&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;BriteView 980H&lt;/td&gt;
+&lt;td&gt; 320GB&lt;/td&gt;
+&lt;td&gt;$163.50&lt;/td&gt;
+&lt;td&gt;?&lt;/td&gt;
+&lt;td&gt;Buggy&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ChannelMaster DTV7400&lt;/td&gt;
+&lt;td&gt; 320GB&lt;/td&gt;
+&lt;td&gt;$240&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;Seems solid, middle of road quality&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Digital Stream DHP1000R&lt;/td&gt;
+&lt;td&gt; 320GB &lt;/td&gt;
+&lt;td&gt; $240 &lt;/td&gt;
+&lt;td&gt; 1 &lt;/td&gt;
+&lt;td&gt; buggy&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DVICO TViX M6620N&lt;/td&gt;
+&lt;td&gt;your own drive&lt;/td&gt;
+&lt;td&gt;$380&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;Highly rated DVR. You add your own hard drive.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ePVision PHD-VRX&lt;/td&gt;
+&lt;td&gt;320GB&lt;/td&gt;
+&lt;td&gt;$500&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;Middle of the road&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Tivo&lt;/td&gt;
+&lt;td&gt;320GB&lt;/td&gt;
+&lt;td&gt;$149 + $15/month&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;All DVRs are compared to it.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Raspberry PI and metageek Wi Spy web interface</title>
+   <link href="http://www.atlantageek.com/2013/04/21/raspberry-pi-and-metageek-wi-spy-web-interface/"/>
+   <updated>2013-04-21T02:46:21Z</updated>
+   <id>http://www.atlantageek.com/2013/04/21/raspberry-pi-and-metageek-wi-spy-web-interface</id>
+   <content type="html">&lt;h2&gt;So what is it.&lt;/h2&gt;
+
+&lt;p&gt;Its a web interface to a metageek spectrum analyzer that runs on a wi-spy. I have a &lt;a href=&quot;http://www.youtube.com/watch?v=jj9u6VtkM3Y&quot;&gt;short video&lt;/a&gt; demostrating an early version of the software.&lt;/p&gt;
+
+&lt;p&gt;Currently there are markers and the beginning of a heatmap.&lt;/p&gt;
+
+&lt;h2&gt;What&#39;s the problem.&lt;/h2&gt;
+
+&lt;p&gt;You may want to monitor your wi-fi signal over long periods of time without tying up your laptop.  With wi-spy&#39;s costing upware of $500 and raspberry PI costing in the $40 range it seems like a small investment to free your laptop.&lt;/p&gt;
+
+&lt;p&gt;Also I dont like installing specialized software on our laptops anymore.  To be it just hogs the system unnecessarily. I tend to prefer webapps over PC apps because they work well whether Im on my work map, home Linux machine or Tablet.&lt;/p&gt;
+
+&lt;p&gt;But by connecting the Raspberry PI to the metageek wispy and with a little node.js code I now have a spectrum analyzer appliance I can connect to whenever I want to see the status of the spectrum.  This device could even be mounted in an area to monitor signal over time for a site survey.&lt;/p&gt;
+
+&lt;h2&gt;So how is it done.&lt;/h2&gt;
+
+&lt;p&gt;The code can be downloaded from &lt;a href=&quot;https://github.com/atlantageek/websocketsa&quot;&gt;github here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After downloading you need to build the version of spectools that is in the repository.  The executable you need is call spectools_red.
+* ./configure
+* make spectool_red&lt;/p&gt;
+
+&lt;p&gt;Now run spectool_red as root.  This application copies data from wispy and copies it to the in memory redis database.&lt;/p&gt;
+
+&lt;p&gt;Next switch to the spectrum_analyzer screen and startup app.js with:
+node app.js&lt;/p&gt;
+
+&lt;p&gt;This will start the web server.  If all is working well you will need to point the web browser to the raspberryPI&#39;s address port 8000.&lt;/p&gt;
+
+&lt;p&gt;The latest version has markers and a heat map.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Why multi-field indexes in postgresql still matter.</title>
+   <link href="http://www.atlantageek.com/2013/02/08/multi-index-postgresql/"/>
+   <updated>2013-02-08T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2013/02/08/multi-index-postgresql</id>
+   <content type="html">&lt;h2&gt;Why wouldn&#39;t it.&lt;/h2&gt;
+
+&lt;p&gt;As of 8.1 postgresql includes the concept of a bitmap heap. A bitmap heap as implemented in postgresql is an array/matrix of bits stored in ram with each cell representing a record in the table being queried. Using the conditions included in the query the cell for each record is activated or deactivated. to show that these records should be included in the result of the query&#39;s search.  At the end of the query the bitmap heap is what determines wich records will be shown.  This bitmap can be built by scanning different indexes based on the query criteria
+Compare this to how simpler databases like mysql work. In mysql only a single index is used for each table in each query.&lt;/p&gt;
+
+&lt;p&gt;Let&#39;s try this with a basic database.  Below is a list of sales records.&lt;/p&gt;
+
+&lt;h3&gt;SALES&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;# |Product|Date      |Store|Count|
+1 |laptop |2-05-2013 |ST1  |10   |
+2 |laptop |2-06-2013 |ST1  |20   |
+3 |laptop |2-07-2013 |ST1  |30   |
+4 |laptop |2-05-2013 |ST2  |20   |
+5 |laptop |2-06-2013 |ST2  |30   |
+6 |laptop |2-07-2013 |ST2  |10   |
+7 |laptop |2-05-2013 |ST3  |20   |
+8 |laptop |2-06-2013 |ST3  |30   |
+9 |laptop |2-07-2013 |ST3  |10   |
+10|phone  |2-05-2013 |ST1  |10   |
+11|phone  |2-06-2013 |ST1  |20   |
+12|phone  |2-07-2013 |ST1  |30   |
+13|phone  |2-05-2013 |ST2  |20   |
+14|phone  |2-06-2013 |ST2  |30   |
+15|phone  |2-07-2013 |ST2  |10   |
+16|phone  |2-05-2013 |ST3  |20   |
+17|phone  |2-06-2013 |ST3  |30   |
+18|phone  |2-07-2013 |ST3  |10   |
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now consider the following query:
+select count(*) from sales where product = &#39;laptop&#39; and Date &gt; &#39;02-06-2013&#39; order by Date
+To keep from accessing records that do not fit the query then both product and date must be in the same index. If the queries are very ad hoc then multiple indexes possibly of each combination would need to be created. And these indexes would have large records because 2 or 3 attributes would be included.  And if you included a fourth attribute then you will soon hit 7-8 indexes to cover every combination.&lt;/p&gt;
+
+&lt;p&gt;Now compare this to the postgresql approach
+Instead you would create a single attribute index for each searchable criteria. Then for each condition in the where portion of the query it will fill in the bitmap array.&lt;br/&gt;
+So for the above query here are the two results of the index query.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;product = laptop
+Record Positions:    1 |2 |3 | 4| 5| 6| 7| 8| 9|10|11|12|13|14|15|16|17|18
+product = &#39;laptop&#39; :  1  1  1  1  1  1  1  1  1  0  0  0  0  0  0  0  0  0
+Date &amp;gt; &#39;02-07-2013&#39;:  0  0  1  0  0  1  0  0  1  0  0  1  0  0  1  0  0  1
+AND Operation      :  0  0  1  0  0  1  0  0  1  0  0  0  0  0  0  0  0  0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using the combined bitmap the system knows which records to pull.&lt;/p&gt;
+
+&lt;p&gt;This is faster than a scan and more efficient than a large number of indexes.  However it is still not as fast as a combined index. based on product and date.&lt;/p&gt;
+
+&lt;p&gt;So consider a different scenario.  So far you have created an index on every attribute on your mult-tenant application. You sale your application to corporate offices that include multiple stores.  So rarely do you have a query that does not have some sort of store criteria. You may even have considered partitioning your application by groups of stores to improve your performance. Before you do this consider a different alternative.  For all your single attribute indexes prefix the store ID. You will still use the bitmap heap when doing searches but when building the bitmap heap you will filter your queries to a greater extent.&lt;/p&gt;
+
+&lt;p&gt;The take away from this is that the single attribute indexes are good to have in your database but that does not mean that that is the only type of indexing you need.  For slow queries combined indexes could be faster.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Switching to Jekyll</title>
+   <link href="http://www.atlantageek.com/2013/01/20/switching-to-jekyll/"/>
+   <updated>2013-01-20T00:00:00-05:00</updated>
+   <id>http://www.atlantageek.com/2013/01/20/switching-to-jekyll</id>
+   <content type="html">&lt;h2&gt;My first post using jekyll&lt;/h2&gt;
+
+&lt;p&gt;Im switching from wordpress to jekyll.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Rocking ltree on postgresql</title>
+   <link href="http://www.atlantageek.com/2012/10/26/rocking-ltree-on-postgresql/"/>
+   <updated>2012-10-26T02:46:21Z</updated>
+   <id>http://www.atlantageek.com/2012/10/26/rocking-ltree-on-postgresql</id>
+   <content type="html">&lt;p&gt;Postgresql 9.1 Now ships with a module called ltree. This is a cool postgresql that allows you to model hierarchies in you database and leverages the GIST indexing mechanism built into postgres.
+Assume you are modeling several organizations:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CREATE TABLE orgs (path ltree);
+INSERT INTO orgs VALUES (&#39;Top&#39;);
+INSERT INTO orgs VALUES (&#39;Top.OrgA&#39;);
+INSERT INTO orgs VALUES (&#39;Top.OrgA.Division1&#39;);
+INSERT INTO orgs VALUES (&#39;Top.OrgA.Division1.storeZ&#39;);
+INSERT INTO orgs VALUES (&#39;Top.OrgA.Division1.storeY&#39;);
+INSERT INTO orgs VALUES (&#39;Top.OrgA.Division2&#39;);
+INSERT INTO orgs VALUES (&#39;Top.OrgA.Division2.storeV&#39;);
+INSERT INTO orgs VALUES (&#39;Top.OrgA.Division2.storeW&#39;)
+CREATE INDEX path_gist_idx ON test USING gist(path);
+CREATE INDEX path_idx ON test USING btree(path);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now you can do some interesting queries such as Give me all the rstores in Division1
+    select * from orgs where path ~ &quot;Top.OrgA.Division1.*&quot;
+or give me all the stores (where the path is at least 4 items long)
+    select * from orgs where path ~ Top.{4}&lt;/p&gt;
+
+&lt;p&gt;This is another neat feature that Postgresql gives you but mysql doesn&#39;t&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>adjusting innodb_log_file_size in  mysql to get around </title>
+   <link href="http://www.atlantageek.com/2010/05/11/adjusting-innodb_log_file_size-in-mysql-to-get-around/"/>
+   <updated>2010-05-11T20:57:22Z</updated>
+   <id>http://www.atlantageek.com/2010/05/11/adjusting-innodb_log_file_size-in-mysql-to-get-around</id>
+   <content type="html">&lt;p&gt;I was getting &quot;ERROR 1033 (HY000): Incorrect information in file: &#39;./realworx_production/analyzers.frm&#39;&quot; whenever I tried to adjust my mysql innodb parameters and run a query.
+To adjust this you have do delete or move the ib_logfile0 and ib_logfile1 file in your datadir.  Then start the database.
+So step-by-step
+1. stop mysql
+2. modify my.cnf, specifically the changes you want to make to innodb_log_file_size
+3. move or delete ib_logfile1 and ib_logfile0
+4. start database.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Accessing a non standard database in rails</title>
+   <link href="http://www.atlantageek.com/2009/08/16/accessing-a-non-standard-database-in-rails/"/>
+   <updated>2009-08-16T00:32:24Z</updated>
+   <id>http://www.atlantageek.com/2009/08/16/accessing-a-non-standard-database-in-rails</id>
+   <content type="html">&lt;p&gt;Normally in rails you would configure a production, test and development database in the database.yml file.  If some of your rails data comes from a different database you can configure it in database.yml as well.  For example I wanted two rails applications to synchronize their databases occassionally.
+To do this I created a remote db in one of the rails application that looks like this in database.yml:&lt;/p&gt;
+
+&lt;p&gt;remotedb:
+  adapter: mysql
+  database: remote_rails
+  username: remote_user
+  password: remote_pwd
+  host: remote server&lt;/p&gt;
+
+&lt;p&gt;Inside the script that is executed by script/runner I did the following to access the new db.&lt;/p&gt;
+
+&lt;p&gt;admin_cfg=Rails::Configuration.new.database_configuration[&quot;remotedb&quot;]
+if remote_cfg.nil?
+  raise &quot;admindb is not configured.  Cannot pull data from admin db.&quot;
+end
+dbh = Mysql.real_connect(remote_cfg[&quot;host&quot;], remote_cfg[&quot;username&quot;], remote_cfg[&quot;password&quot;], remote_cfg[&quot;database&quot;])
+Now use ruby&#39;s mysql library to work with dbh&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Is apple trying to do an endrun around the desktop</title>
+   <link href="http://www.atlantageek.com/2009/08/14/is-apple-trying-to-do-an-endrun-around-the-desktop/"/>
+   <updated>2009-08-14T09:16:58Z</updated>
+   <id>http://www.atlantageek.com/2009/08/14/is-apple-trying-to-do-an-endrun-around-the-desktop</id>
+   <content type="html">&lt;p&gt;A friend told me suggested apple was making a cradle that allowed you to connect your iphone to a monitor , keyboard and mouse.  This is an interesting idea.  Could apple try to make a dent into the desktop market by replacing the desktop. After all windows XP&#39;s minimum requirements includes a 233 MHz processor.  The iphone runs 600 MHz and Im sure the iphone&#39;s OS is not nearly as bloted as XP.  What is the real difference between an iphone and a Mac.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>writeMultibyte for Flex on Linux</title>
+   <link href="http://www.atlantageek.com/2009/05/30/writemultibyte-for-flex-on-linux/"/>
+   <updated>2009-05-30T04:06:21Z</updated>
+   <id>http://www.atlantageek.com/2009/05/30/writemultibyte-for-flex-on-linux</id>
+   <content type="html">&lt;p&gt;writeMultiByte is not working for linux (though it is fine in Windows) in Flashplayer 10.&amp;nbsp; It failed for me in the ByteArray class and I&#39;ve seen other postings that the issue exist for the binarySocket class as well. At least for the us-ascii encoding.&lt;/p&gt;
+
+&lt;p&gt;A For loop around a writeByte is thework around&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Radio Buttons act more like Combobox</title>
+   <link href="http://www.atlantageek.com/2009/04/01/radio-buttons-act-more-like-combobox/"/>
+   <updated>2009-04-01T13:43:25Z</updated>
+   <id>http://www.atlantageek.com/2009/04/01/radio-buttons-act-more-like-combobox</id>
+   <content type="html">&lt;p&gt;Normally what I would do with radio buttons is to look for a click event and set variables accordingly.&amp;nbsp; However there is another way to use radio button if you are operating more in a &#39;filling out a form&#39; approach.&lt;/p&gt;
+
+&lt;p&gt;Here it is
+    &amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+    &amp;lt;mx:Application xmlns:mx=&quot;http://www.adobe.com/2006/mxml&quot; layout=&quot;absolute&quot;&gt;
+    &amp;lt;mx:Label text=&quot;{&#39;Radio Selected :&#39;+ rg.selectedValue.toString()}&quot;/&gt;
+    &amp;lt;mx:RadioButtonGroup id=&quot;rg&quot;/&gt;
+    &amp;lt;mx:RadioButton x=&quot;10&quot; y=&quot;26&quot; value=&quot;RADIO 1&quot; selected=&quot;true&quot; label=&quot;radio1&quot; groupName=&quot;rg&quot;/&gt;
+    &amp;lt;mx:RadioButton x=&quot;10&quot; y=&quot;52&quot; value=&quot;RADIO 2&quot; label=&quot;radio2&quot; groupName=&quot;rg&quot;/&gt;
+    &amp;lt;/mx:Application&gt;&lt;/pre&gt;
+It now works more like a combobox instead of individual buttons. The label will alwys show the button group&#39;s selected Value.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Verify ItemEditors input in a datagrid.</title>
+   <link href="http://www.atlantageek.com/2009/03/27/verify-itemeditors-input-in-a-datagrid/"/>
+   <updated>2009-03-27T14:34:07Z</updated>
+   <id>http://www.atlantageek.com/2009/03/27/verify-itemeditors-input-in-a-datagrid</id>
+   <content type="html">&lt;p&gt;Working a lot with ItemEditors in DataGrids.&lt;/p&gt;
+
+&lt;p&gt;One of the issues I&#39;ve been dealing with is adding validation to the item editor text entry. I&#39;ve been attaching my validations to the item editor objects themselves however&amp;nbsp; the Datagrid object throws out ItemEditEnd events. You have to check the event&#39;s DataGridReason to see whether it is a cancel or not and then you have the opportunity to validate the data.&amp;nbsp; If the data is bad then do a event.PreventDefault to interrupt the data acceptance and set the target&#39;s errorString to the error message.&lt;/p&gt;
+
+&lt;p&gt;More details can be found here.&lt;/p&gt;
+
+&lt;p&gt;http://www.adobe.com/devnet/flex/articles/itemeditors_pt2.html&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>C Version of Adobe Flex Policy Server</title>
+   <link href="http://www.atlantageek.com/2009/02/28/c-version-of-adobe-flex-policy-server/"/>
+   <updated>2009-02-28T12:54:10Z</updated>
+   <id>http://www.atlantageek.com/2009/02/28/c-version-of-adobe-flex-policy-server</id>
+   <content type="html">&lt;p&gt;Here is a rewrite of the adobe flex policy server written in C.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.atlantageek.com/?attachment_id=74&quot; rel=&quot;attachment wp-att-74&quot; title=&quot;FlexPolicyServer&quot;&gt;FlexPolicyServer&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This is useful if you are adding a flex based web interface to an embedded system (something running openwrt). You can use this policy server instead of the ones written in perl and python.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>MINI SA from dunehaven</title>
+   <link href="http://www.atlantageek.com/2009/02/07/mini-sa-from-dunehaven/"/>
+   <updated>2009-02-07T06:01:14Z</updated>
+   <id>http://www.atlantageek.com/2009/02/07/mini-sa-from-dunehaven</id>
+   <content type="html">&lt;p&gt;I just got a mini SA board from dunehven.com. My goal was to write a flex UI for a spectrum analyzer. Somr ething I&#39;ve done at work but unable to demo or discuss. So I&#39;ve been looking for a cheap spectrum analyzer to supply the  rf data.  I&#39;ve been considering a wi-spy but am unable to bring myself to buying a $200 device for this project.  Ebay never gave me joy on finding a cheaper model.  I&#39;ve bidded on 2 or 3 models bug gave up at 120 dollars.&lt;/p&gt;
+
+&lt;p&gt;Then I found the MiniSA for $50 at dunehaven.  Just from the specs it looks like it is better than the Wi-spy.  However it is a little bit bulkier because in addition to the $50 SA you must buy a open source .Arduino board (~40). I like this solution better because I wanted to get into the AVR microcontrollers anyway.&lt;/p&gt;
+
+&lt;p&gt;First impressions of the MINISA is that the  software is pretty minimal compared to what I&#39;ve seen Wi-spy does.  Wi-spy gives you templates, Spectrum screen, waterfall graphs, statistical displays and all sorts of daemon software.&lt;/p&gt;
+
+&lt;p&gt;MiniSA&#39;s windows only client is a minimal Spectrum screen.&lt;/p&gt;
+
+&lt;p&gt;The other  problem is that minisa&#39;s usb protocol is not documented. I have email out to the designer hoping he will give me some info.  Until then I might try my hand at some USB snooping.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Time for a new Mysql storage engine written for Nvidia Cuda</title>
+   <link href="http://www.atlantageek.com/2008/11/14/time-for-a-new-mysql-storage-engine-written-for-nvidia-cuda/"/>
+   <updated>2008-11-14T21:34:22Z</updated>
+   <id>http://www.atlantageek.com/2008/11/14/time-for-a-new-mysql-storage-engine-written-for-nvidia-cuda</id>
+   <content type="html">&lt;p&gt;I always assumed DBs were IO bound but my work at Retek and now from what I am reading here on &lt;a href=&quot;http://www.cse.ust.hk/catalac/papers/gpujoin_sigmod08.pdf&quot; title=&quot;join performance with CUDA&quot;&gt;join performance &lt;/a&gt;seems like it might be more CPU bound. Maybe its time for a Nvidia Cuda based storage engine for mysql.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Outsource the Scaffolding</title>
+   <link href="http://www.atlantageek.com/2008/10/27/outsource-the-scaffolding/"/>
+   <updated>2008-10-27T12:18:58Z</updated>
+   <id>http://www.atlantageek.com/2008/10/27/outsource-the-scaffolding</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://blog.kischuk.com/2008/08/11/outsource-the-scaffolding/trackback/&quot;&gt;Outsourcing the scaffolding&lt;/a&gt; is an article from a fellow Atlantian discussing how best to oursource code. His thesis is that you should only outsource the the initial version or core product.  Once you get into the details where the problem is nolonger simple you need to bring it in house.&lt;/p&gt;
+
+&lt;p&gt;I agree and I think this applies to outsourced development even when it is a division of the same company.  When the designers and requirement gathers are far away from the developers you are asking for trouble.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Proposed policy. Get rid of the Drug Micro Monopoly.</title>
+   <link href="http://www.atlantageek.com/2008/10/18/proposed-policy-get-rid-of-the-drug-micro-monopoly/"/>
+   <updated>2008-10-18T18:49:51Z</updated>
+   <id>http://www.atlantageek.com/2008/10/18/proposed-policy-get-rid-of-the-drug-micro-monopoly</id>
+   <content type="html">&lt;p&gt;&lt;strong&gt;Require multiple suppliers for any FDA approved drugs.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This seems like a no brainer to me. One of our problems in the US is the expense of drugs. In other countries with more comprehensive government supplied health care there are price controls. In this country it is considered anti-capitalist to be involved with price controls to the point that our sitting president has not given medicare the right to negotiate lower prices directly with drug companies. The US pays more for drugs than other industrialized nations and thus subsidize drug development that other countries benefit from. The government is already involved by giving drug companies temporary monopolies through our patent system. And without this government involvment their industry would collapse.&lt;/p&gt;
+
+&lt;p&gt;Of course drug companies say that they have to do a lot of research to get even one&amp;nbsp; sucessful drug on the market.&amp;nbsp; So they need these temporary monopolies to get a decent return on investment.&amp;nbsp; However there is no way for the markets to determine a fair price because a consumer expects their insurance company to pay whatever it takes to keep them alive.&amp;nbsp; The status-quo is not unacceptable. Between the micro monopolies and the third party payer system the markets do not have room to operate properly.&lt;/p&gt;
+
+&lt;p&gt;I would require multiple suppliers for each drug that gets FDA approval. The research company could auction off rights to manufacture/sell their drug to two other companies so there would be at least three suppliers. This would allow the drug research company to recover some of their investment quickly and industry experts (the researcher&#39;s competitors) should be able to determine the proper value of the drug during the auction phase. We would have to be careful of collusion. (Three companies always buying each others patents but never manufacturing their partner&#39;s drugs). But the situation should be no worse than what we have now and should be a little better.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>REO Database</title>
+   <link href="http://www.atlantageek.com/2008/09/25/reo-database/"/>
+   <updated>2008-09-25T10:07:49Z</updated>
+   <id>http://www.atlantageek.com/2008/09/25/reo-database</id>
+   <content type="html">&lt;p&gt;A list of websites featuring Bank Owned Properties.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.ahmhomes.com/&quot;&gt;American Home Mortgages REO &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://bankofamerica.reo.com/search/&quot;&gt;Bank of America REO&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.compassbank.com/appforms/properties/index.jsp&quot;&gt;Compass Bank REO &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.countrywide.com/purchase/f_reo.asp&quot;&gt;Countrywide REO&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.mortgagecontent.net/reoSearchApplication/fanniemae/reoSearch.jsp&quot;&gt;Fannie Mae &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.mortgagecontent.net/reoSearchApplication/fanniemae/reoSearch.jsp&quot;&gt;Freddie Mac &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.homesales.gov/&quot;&gt;Gov. Home Sales &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.banking.us.hsbc.com/HICServlet?cmd_PropertySearchDefault=cmd_PropertySearchDefault&quot;&gt;HSBC REO&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.hud.gov/homes/index.cfm&quot;&gt;Hud REO &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.ocwen.com/reo/home.cfm&quot;&gt;IndyMac REO&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.ocwen.com/reo/home.cfm&quot;&gt;JPMorgan Chase REO &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://services.mandtbank.com/personal/bank_owned_prop.cfm&quot;&gt;M&amp;amp;T Bank REO &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.ocwen.com/reo/home.cfm&quot;&gt;Ocwen Financial REO &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.pasreo.com/reo/consumerSvlt//nav/ConsumerNavL1.jsp/requestPage/consumer/PropertySearch.jsp&quot;&gt;Wells Fargo &lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Available Data Sources</title>
+   <link href="http://www.atlantageek.com/2008/09/12/available-data-sources/"/>
+   <updated>2008-09-12T16:54:02Z</updated>
+   <id>http://www.atlantageek.com/2008/09/12/available-data-sources</id>
+   <content type="html">&lt;p&gt;&lt;strong&gt;APIs&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;Mapping
+&lt;ul&gt;
+    &lt;li&gt;http://code.google.com/apis/maps/index.html&lt;/li&gt;
+    &lt;li&gt;http://developer.yahoo.com/maps/&lt;/li&gt;
+    &lt;li&gt;http://geocoder.us/help/&lt;/li&gt;
+    &lt;li&gt;http://www.multimap.com/share/documentation/api/&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;http://www.education.com/webservice/request&quot; target=&quot;_new&quot;&gt;http://www.education.com/webservice/request&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+Shopping
+&lt;ul&gt;
+    &lt;li&gt;http://www.amazon.com/gp/browse.html/ref=sc_fe_l_2/103-1644811-9832630?%5Fencoding=UTF8&amp;amp;node=12738641&amp;amp;no=3435361&lt;/li&gt;
+    &lt;li&gt;http://developer.ebay.com/&lt;/li&gt;
+    &lt;li&gt;https://partners.shopping.com/app&lt;/li&gt;
+    &lt;li&gt;http://developer.yahoo.com/shopping/&lt;/li&gt;
+    &lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Education.com's API for Schools</title>
+   <link href="http://www.atlantageek.com/2008/09/12/educationcoms-api-for-schools/"/>
+   <updated>2008-09-12T16:52:51Z</updated>
+   <id>http://www.atlantageek.com/2008/09/12/educationcoms-api-for-schools</id>
+   <content type="html">&lt;p&gt;Now you can integrate school information into you mashup with education.com&#39;s school api.&amp;nbsp; Get your key &lt;a href=&quot;http://www.education.com/webservice/request&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;They have an example application &lt;a href=&quot;http://www.education.com/schoolfinder/tools/localschools-widget/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Tools to develop flex on linux</title>
+   <link href="http://www.atlantageek.com/2008/09/11/tools-to-develop-flex-on-linux/"/>
+   <updated>2008-09-11T11:35:10Z</updated>
+   <id>http://www.atlantageek.com/2008/09/11/tools-to-develop-flex-on-linux</id>
+   <content type="html">&lt;p&gt;Sometimes you need to write a debug log when developing flex. The best way to do that in linux is first configure your ~/mm.cfg file with the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ErrorReportingEnable=1
+TraceOutputFileEnable=1&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then either use the flash player debug plugin or use the standalone debug player.  I prefer the standalone because I can launch it from the command line right after a successful mxmlc compile. Both are in the tar file &lt;a href=&quot;http://download.macromedia.com/pub/flashplayer/updaters/9/flash_player_9_linux_dev.tar.gz&quot;&gt;here &lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The log will by default be written at
+~/.macromedia/Flash_Player/Logs/flashlog.txt
+And no this is current as of 2008-9-11, well after the macromedia/adobe merge.  Adobe just hasnt bothered changing the path yet.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>The Hidden Knowledge Mangement system.</title>
+   <link href="http://www.atlantageek.com/2008/09/08/the-hidden-knowledgemangement-system/"/>
+   <updated>2008-09-08T02:19:02Z</updated>
+   <id>http://www.atlantageek.com/2008/09/08/the-hidden-knowledgemangement-system</id>
+   <content type="html">&lt;p&gt;I&#39;ve recently read Datawocky&#39;s article on &lt;a href=&quot;http://anand.typepad.com/datawocky/2008/07/stop-email-overload-and-break-silos-using-wikis-blogs-and-im.html&quot;&gt;Replacing Email with blogs, wikis and IM&lt;/a&gt;. Its has some good ideas however the devil is in the details. The advantage of email is that it is convenient for the creator. If it is not convenient for the creator then they are less likely to create/send the data. It might be correct that the 3 system approach would be easier to retrieve data but if it reduces the amount of electronic data then it only hurts the communications.&lt;/p&gt;
+
+&lt;p&gt;I think a better approach would be to have special email addresses that automatically publish the content and responses of the emails themselves. We see this for mailing lists on the internet today. Any email written to low level groups in your organization could be published to an internal website.
+However this does not solve the multiple document revisions being passed back and forth over email problem. To handle documents that are passed back and forth I would argue that better group editing tools would be better such as google docs but for the intranet company. Nobody likes downloading documents to their local machine unless they are taking it off line.&lt;/p&gt;
+
+&lt;p&gt;A little scripting on the email server side could eliminate this issue. Whenever a document is emailed out it could be replaced with a link to an editing tool with the document saved on the server side.&lt;/p&gt;
+
+&lt;p&gt;Along with this companies should be smart about how they define email addresses. People on the helpdesk should not their person specific email address to customers. Instead they should give a generic email address that can be reassigned to someone else after the original person leaves for a new job. How oftern have you used your email as a datastore. A person that has been with the company for a decade probably keeps a significant amout of his information in his email. A resource a lot of people never look at after the original person leaves.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Knowledge Management in Services</title>
+   <link href="http://www.atlantageek.com/2008/09/07/knowledge-management-in-services/"/>
+   <updated>2008-09-07T09:21:17Z</updated>
+   <id>http://www.atlantageek.com/2008/09/07/knowledge-management-in-services</id>
+   <content type="html">&lt;p&gt;Just came back from a competitive bidding event. My company was one of the 5 suppliers that were bidding on replacing the customers test equipment with our equipment. We interviewed everyone from the guys in the back office to the guys in the field and the interviewees scored us on the types of questions we asked.&lt;/p&gt;
+
+&lt;p&gt;One item that came up was knowledge management. The customer is generating a huge amout of data, but there is no way for them to compare test results from one customer to the other. Or to compare data from different vendors.&lt;/p&gt;
+
+&lt;p&gt;There seems to be a great opportunity here for someone to leverage these issues.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>FlashPlayerTrust on Gnu/Linux</title>
+   <link href="http://www.atlantageek.com/2008/08/27/flashplayertrust-on-gnulinux/"/>
+   <updated>2008-08-27T11:26:50Z</updated>
+   <id>http://www.atlantageek.com/2008/08/27/flashplayertrust-on-gnulinux</id>
+   <content type="html">&lt;p&gt;I was getting Security Sandbox violations in my flash log. I was trying to read a local file and to connect to the network. This is for development reasons only. The final version is all web. Anyway to resolve this on my linux system I created a file with the top level paths that ended in .cfg. You can place  the file in the dir: /home/{user}/.macromedia/Flash_Player/#Security/FlashPlayerTrust directory.
+For this to affect all users you put it in this directory.
+/etc/adobe/FlashPlayerTrust/&lt;/p&gt;
+
+&lt;p&gt;The file could be as simple as&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+/home/{user}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&lt;/p&gt;
+
+&lt;p&gt;/tmp&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;&amp;nbsp; &lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This file should contain a list of top level paths you want the flash player to be able to find. As long as the file ends in .cfg you should be able to use any file name.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Edward Tufte</title>
+   <link href="http://www.atlantageek.com/2008/03/27/edward-tufte/"/>
+   <updated>2008-03-27T02:35:07Z</updated>
+   <id>http://www.atlantageek.com/2008/03/27/edward-tufte</id>
+   <content type="html">&lt;p&gt;Yesterday I went to the Edward Tufte&lt;a href=&quot;http://www.edwardtufte.com/tufte/courses&quot;&gt; Course&lt;/a&gt; that my company sent me on. I&#39;m trying to figure out how I can keep the books.The Class rocked.  I was inspired by some of the stuff with &lt;a href=&quot;http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0001OR&amp;amp;topic_id=1&quot;&gt;SparkLines&lt;/a&gt; Got some great ideas for the Dashboard design that we&#39;ve been struggling with. Also learned a few other things. Edward Tufte hates Microsoft, loves the iphone and thinks that a handout beats powerpoint any day. I have to admit he made some great points. For instance.1. Data Throughput is slow during Powerpoint presentations2. Handouts that are engrossing are a good thing. Even if the audience ignores you.3. Handouts can sit there for hours while a powerpoint is on display for only a few minutes.  And what better way to unsurp your competitor than by giving the potential client something to read during the competitors boring presentation.Other things I learned. Minimize space dedicated to controls. I must have known this already.  I love VI editor because there is little space dedicated to controls.  Its all about the content.  Where as on most IDEs you are luck to get 25% of the screen used for editing code. Hell on this entry form my text box is luck to be 15% of the screen. So I&#39;ll look for ways to hide controls.That is the Gist of what I learned. I truly enjoyed this class and I should have taken it a year earlier.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>A small trick when developing flex code that talks to hosting server</title>
+   <link href="http://www.atlantageek.com/2008/03/22/a-small-trick-when-developing-flex-code-that-talks-to-hosting-server/"/>
+   <updated>2008-03-22T02:05:52Z</updated>
+   <id>http://www.atlantageek.com/2008/03/22/a-small-trick-when-developing-flex-code-that-talks-to-hosting-server</id>
+   <content type="html">&lt;p&gt;I often develop my flex code on a machine that is not running a web server. So I have to hardcode the IP of a working server when I need to pull data from the hosting server.&lt;/p&gt;
+
+&lt;p&gt;This can be a pain because before you checkin the code you have to remember to change the method of pulling the IP address.&lt;/p&gt;
+
+&lt;p&gt;So here is my solution
+    var domain:String=mx.utils.URLUtil.getServerName(url);
+    var port_nbr:int=mx.utils.URLUtil.getPort(url);
+    if (flash.system.Security.sandboxType == &quot;localTrusted&quot;)
+    {
+        Alert.show(&quot;In Development mode:&quot;+domain+&quot;,&quot;+port);
+        webService.wsdl=&quot;http://10.0.0.60:3000/services/wsdl&quot;;
+    }
+    else
+    {
+        webService.wsdl=&quot;http://&quot;+domain+&quot;:&quot;+port+&quot;/services/wsdl&quot;;
+    }
+Obviously this is for web services but this technique can be used for sockets as well.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>SNMP and Ruby</title>
+   <link href="http://www.atlantageek.com/2008/02/27/snmp-and-ruby/"/>
+   <updated>2008-02-27T18:19:20Z</updated>
+   <id>http://www.atlantageek.com/2008/02/27/snmp-and-ruby</id>
+   <content type="html">&lt;p&gt;Working with SNMP can be challenging. If you are a Newbie to SNMP and are trying to do something a little unusual (Writing a Ruby agent that sends snmp traps) you probably have trouble finding examples.  So I&#39;ve been fighting SNMP for a few days and here are some notes.&lt;/p&gt;
+
+&lt;p&gt;Before you start writing ruby code make sure you can send and recieve snmp messages. In my case I was working with traps.  This is how I got it working in Ubuntu.&lt;/p&gt;
+
+&lt;ol&gt;
+    &lt;li&gt;Install net-snmp (This is the snmp library and its daemons.) also install net-snmp-utils which is a lot of the command line tool. On Ubuntu &lt;code&gt; apt-get install net-snmp ; apt-get install net-snmp-utils&lt;/code&gt; should work.&lt;/li&gt;
+    &lt;li&gt;On Ubuntu the /etc/default/snmpd file overrides a lot of the default snmp settings.  On my version the SNMPDOPTS variable included &#39;127.0.0.1&#39; as the address list.  You can just remove this if you want to recieve snmp traps from other servers.  Also change &#39;TRAPDRUN&#39; to &#39;yes&#39;.  This will start snmptrapd daemon.&lt;/li&gt;
+    &lt;li&gt;Try the following command.&lt;code&gt;snmptrap -v 1 -c public localhost 1.3.6.1.4.1.10300.1.1.1.12 localhost 3 0 &#39;&#39;&lt;/code&gt; This should work.  We are not using any mibs. Something should be written to your /var/log/syslog&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;If you still have trouble with snmp you can use tcpdump to make sure you are getting a udp message on port 162. I won&#39;t get into that.  Its just a sanity check.&lt;/p&gt;
+
+&lt;p&gt;Now for the ruby code.  To send a version 1 message from ruby you need the snmp gem.  So do your &#39;gem install snmp&#39;&lt;/p&gt;
+
+&lt;p&gt;Some sample code to do the same call&lt;/p&gt;
+
+&lt;pre&gt;
+
+require &#39;snmp&#39;
+SNMP::Manager.open(:Host =&gt; &quot;localhost&quot;,:Version =&gt; :SNMPv1) do |snmp|
+x=snmp.trap_v1(
+&quot;1.3.6.1.4.1.10300.1.1.1.12&quot;,
+&#39;localhost&#39;,
+:enterpriseSpecific, #Generic Trap Type
+0,1234
+)
+
+end
+&lt;/pre&gt;
+
+
+&lt;p&gt;Notice the :Host key in the Manager object. This is the address of the manager that you want to send the snmp message to.  The localhost in the parameters is the ip or domain name of the agent that is sending the trap.&lt;/p&gt;
+
+&lt;p&gt;These are just some quick notes mostly for myself and for others who get stuck.  It is probably not enough but there are so few examples of this out there on the net it should be useful.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Resume</title>
+   <link href="http://www.atlantageek.com/2008/02/06/resume/"/>
+   <updated>2008-02-06T06:56:18Z</updated>
+   <id>http://www.atlantageek.com/2008/02/06/resume</id>
+   <content type="html">&lt;p&gt;Tommie M. Jones&lt;/p&gt;
+
+&lt;p&gt;Email: Resume@atlantageek.com&lt;/p&gt;
+
+&lt;p&gt;Summary of Qualification
+    * Well versed in web development.
+    * Strong Unix Background, 10 years of experience
+    * Graduate education and experience in Operations Research and Statistics
+    * Experience with object oriented methodologies.
+    * Technologies: SPSS,Oracle,  Apache, CGI, Oracle,XML, MS Access, MySQL, Rails, Unix and Windows 2000/NT, Adobe Flex
+    * Unix Systems: (Linux, Solaris, HP-UX, AIX)
+    * xtensive Infrastructure and Architecture experience
+Professional Experience
+Dec.2005 - Current
+Sunrise Telecom Broadband Group
+Software engineer &amp;amp; Team Lead
+Sunrise Telecom develops test equiptment for the telecommunications industry.  The Broadband Group is responsible for Cable testing equiptment. I was the first web engineer hired in the Atlanta office.
+    Built Web and Linux group inside the Atlanta office
+    Developed 3 web applications from scratch. Two were in PHP/Cake and 1 was in Ruby on Rails and Adobe Flex
+    Was the architect for 2 additional applications  (1 windows and 1 PHP/Cake) that was developed by 4 offshore (China) engineers
+     Largest project was a Rails application that used flex for reporting and ruby servers to communicate to monitoring equipment in a proprietary binary protocol. Also required custom MySQL functions written in C that allowed arithmetic functions on arrays in blobs in MySQL
+    Managed the hiring process of 5 engineers. 3 reported to me. 2 were for a new Linux firmware group meant to takeover a project from a closed office. These 2 did not report to me.
+    My group and I were also responsible for configuring and administering the Wiki, Bugzilla, Subversion and a document search engine.
+    Not only was I involved with development I visited customer sites to get feedback on the products.
+Feb. 2005 - Dec. 2005
+Internet Security Systems
+Software Developer
+    Developed Build tools for product development team.
+Oct.2004 - Dec. 2004
+Verizon
+Contractor
+    Developed a web based tool that reported, analyzed and forecast cellphone traffic.
+    Software includes Oracle, Mysql, Apache, Perl and Solaris.
+    Analysis techniques include linear regression and exponential smoothing.
+March 2002 - Oct. 2004
+Retek
+Senior Associate Scientist
+On site in London, UK for 4 months. I worked with Sainsbury/Accenture on how to improve their forecasting model performance. Analyzed product selling patterns to identify the best fit statistical forecasting model for their product lines. The models used included Bayesian statistics and causal forecasting.&lt;/p&gt;
+
+&lt;p&gt;Architect/Lead Developer of Curve 10.5 written in C++.
+    Supervised and Trained Retek Labs contract software engineers on the RPAS API for Version 11.0
+    Developing Retail Sales Forecasting system using Multi-dimensional database.
+    Developed forecasting software in C++ on both windows and unix.
+    Pricing Analysis for Best Buy using Regression and Mixed Integer
+    Programming.
+    Developed product configuration software in Java using SWING.
+     Taken a client facing role in the later portion of my career at Retek.
+     Worked at a client&#39;s site in London for four months in 2004.
+     Taken a Scientist role doing price optimization and data analysis for one
+     client.
+Oct. 2001 - March 2002
+IBSS
+Contract Developer
+     Developing tools for development group in Perl and Unix Shell scripting.
+     Part of Development team for custom manufacturing software.
+May 2000 - Aug. 2001
+SilverPop&lt;/p&gt;
+
+&lt;p&gt;Senior Developer
+     Designed and Developed Content Management System (CMS) for a Dynamic Messaging System written in PHP, Perl and Java.  Since the CMS was a central component of the product, this required major requirement collection from other developers to make sure the product met its goal.
+     Developed with SQL and Oracle as the database
+    Designed and Developed User/Group/Role management component of the Dynamic Messaging System.
+     Coded Unit Testing for automated testing system.
+     Worked with QA and Product Support to resolve lingering issues.
+     Developed mail tracking system using embedded html messages that tracked when and how email was opened (written in Java)
+     Modified Apache Module written in C to connect to Silverpop&#39;s server application through sockets.
+     Worked with XML and XSL.
+    Developed mainly on Linux operating system.
+    Converted CGI scripts to use mod_perl
+1998 - May 2000
+ICC/GR Software
+Senior Developer and Release Engineer
+     System Administrator for Linux, Unix, Sun, Solaris, HP and HP-UX systems
+     Maintained last release of MES (Manufacturing Execution System) product written in C, C++ and Oracle SQL.
+     Developed Intranet site that generated dynamic images with Perl/GD that graphed data from bug tracking database (Written in Oracle).
+    Worked with development group to simplify and automate release procedures for main product
+    Wrote Business case for the implementation of a Knowledge Management system.
+    Wrote Several Unix tools in Perl and ksh, that monitored mission critical processes
+    Worked with main development group to simplify release processes.
+    Worked closely with Customers to make sure the product worked on their configuration of Unix/ Database versions.
+    Maintained Infrastructure for development group
+    Developed configurable Proxy server for SFDM&#39;s API written in C, LEX, YACC
+    Converted code to New versions of HP-UX and Solaris and new version of Oracle
+    Acted as Unix System Administrator and DBA for product development team
+1995 - 1998
+IBSS
+Developer/Team Lead
+     Worked with AIX, HP-UX and NCR versions of Unix
+     part of development team for proprietary application server that used
+     a lot of IPC functions (Shared memory, semaphores)
+     Interfaced barcode scanners and barcode printers to Unix systems.
+     Used ODBC to interface system to Relational Database.
+    Assisted in design of custom manufacturing floor tracking application
+    On Developmentent team for 4GL compiler project which used LEX &amp;amp; YACC.
+    Team Lead of small team that customized Manufacturing system for customer.  Duties included making sure project was on time and interfacing with clients.
+    Worked closely with Customers to solve issues and do training.
+    Maintained order processing system that included manual order entry and EDI
+    Maintained Project written in Perl
+Skills
+Operating Systems:&lt;/p&gt;
+
+&lt;p&gt;Unix, Linux&lt;/p&gt;
+
+&lt;p&gt;Software
+SAS, SPSS, WordNet, Apache, Internet Explorer, Netscape Navigator, Adobe Photoshop, Microsoft Office&lt;/p&gt;
+
+&lt;p&gt;Programming, Protocols and Mark-Up Languages:
+C, C++, 4GL, SMTP, Perl {LWP, GD}, CGI, DBI, Javascript, Java, HTML, JDBC, XML,
+LDAP&lt;/p&gt;
+
+&lt;p&gt;Databases:&lt;/p&gt;
+
+&lt;p&gt;Oracle, MySQL, Microsoft Access&lt;/p&gt;
+
+&lt;p&gt;Education
+2001 - 2005: Georgia State University, Atlanta Ga
+Masters of Science in Business Analytics [Robinson School of Business]&lt;/p&gt;
+
+&lt;p&gt;1993 - 1995: North Carolina State University Raleigh, NC
+Masters of Engineering Major: Integrated Manufacturing
+Systems&lt;/p&gt;
+
+&lt;p&gt;1989 - 1993: North Carolina State University Raleigh, NC
+Bachelor of Science Major: Computer Science Minor: Industrial Engineering&lt;/p&gt;
+
+&lt;p&gt;References
+References available upon request&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Areaware Mango Wooden Radio</title>
+   <link href="http://www.atlantageek.com/2008/01/30/areaware-mango-wooden-radio/"/>
+   <updated>2008-01-30T20:14:19Z</updated>
+   <id>http://www.atlantageek.com/2008/01/30/areaware-mango-wooden-radio</id>
+   <content type="html">&lt;p&gt;A really cool looking design.&amp;nbsp; Apparently the goal was to create stuff that traditional craftsmen using sustainable materials to create high value products.&amp;nbsp; Singgih Kartono came up with the &lt;a href=&quot;http://areaware.com/?p=21253&amp;amp;lng=en&amp;amp;id=221&quot;&gt;Areaware Mango Wooden Radio&lt;/a&gt; . I like the idea but I thing a clock design would have carried over better.&amp;nbsp; I have trouble dedicating that much space to an object I rarely need to look at from afar.&amp;nbsp; By the way why someone needs to mix a cool wall clock with an mp3 player.&amp;nbsp; Now that would rock.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</title>
+   <link href="http://www.atlantageek.com/2008/01/30/adobe-developer-center-designing-for-flex-%25e2%2580%2593-part-3-structuring-your-application/"/>
+   <updated>2008-01-30T11:54:21Z</updated>
+   <id>http://www.atlantageek.com/2008/01/30/adobe-developer-center-designing-for-flex-%e2%80%93-part-3-structuring-your-application</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://www.adobe.com/devnet/flex/articles/fig_pt3_02.html&quot;&gt;Adobe - Developer Center : Designing for Flex &amp;ndash; Part 3: Structuring your application&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Sun Buys Mysql</title>
+   <link href="http://www.atlantageek.com/2008/01/16/sun-buys-mysql/"/>
+   <updated>2008-01-16T14:38:44Z</updated>
+   <id>http://www.atlantageek.com/2008/01/16/sun-buys-mysql</id>
+   <content type="html">&lt;p&gt;Excellent news. Sun acquires Mysql.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://blogs.mysql.com/kaj/sun-acquires-mysql.html/&quot;&gt;MySQL AB :: Kaj Arn&amp;ouml;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Three Reasons why Sun bought MySQL&lt;/p&gt;
+
+&lt;p&gt;First: Sun has seen its technology base crumble with the rise of Microsoft on the enterprise site and Linux on the Anti-Microsoft side. They&#39;re getting their ass kicked.  Java has helped them slow their decline but even there they are not the only Java tool shop in town. Now with MySQL they have a chance.  A while back they did a deal with Oracle where they sold a DB appliance with Oracle being the DB. I never saw one being used but it seemed like a great concept.  The problem with these DBs is that they are a pain in the ass to tune to your hardware.  With the appliance the DB will already be tuned to the hardware.&lt;/p&gt;
+
+&lt;p&gt;Second Sun gets to capitalize on its enterprise good name.  MySQL is an excellent product but risk averse companies do not consider it an option. With sun&#39;s name behind MySQL it will get an air of legitimacy.  So Sun gets to add value to MySQL with very little effort and gets to reap the rewards of the legitimacy with little effort.&lt;/p&gt;
+
+&lt;p&gt;Last of all&lt;/p&gt;
+
+&lt;p&gt;Sun gets it sales force back in the Web based companies contact list. All these companies trying to be corporate citizens are sending Sun their $500 to pay for MySQL and while they are on the phone they get to hear about Sun&#39;s new hardware lineup.  Really when was the last time you went to Sun instead of Dell for your web server needs.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>ChRoMicro - Cheap Robotic Microhelicopter HOWTO</title>
+   <link href="http://www.atlantageek.com/2008/01/15/chromicro-cheap-robotic-microhelicopter-howto/"/>
+   <updated>2008-01-15T19:18:58Z</updated>
+   <id>http://www.atlantageek.com/2008/01/15/chromicro-cheap-robotic-microhelicopter-howto</id>
+   <content type="html">&lt;p&gt;&lt;a href=&quot;http://www.pabr.org/chromicro/doc/chromicro.en.html&quot;&gt;ChRoMicro - Cheap Robotic Microhelicopter HOWTO&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Inter-Sections &raquo; Blog Archive &raquo; How to recognise a good programmer</title>
+   <link href="http://www.atlantageek.com/2008/01/11/inter-sections-%25c2%25bb-blog-archive-%25c2%25bb-how-to-recognise-a-good-programmer/"/>
+   <updated>2008-01-11T20:46:32Z</updated>
+   <id>http://www.atlantageek.com/2008/01/11/inter-sections-%c2%bb-blog-archive-%c2%bb-how-to-recognise-a-good-programmer</id>
+   <content type="html">&lt;p&gt;A good essay on how to find a good programmer.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.inter-sections.net/2007/11/13/how-to-recognise-a-good-programmer/&quot;&gt;Inter-Sections &amp;raquo; Blog Archive &amp;raquo; How to recognise a good programmer&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Google Blog</title>
+   <link href="http://www.atlantageek.com/2008/01/11/google-blog/"/>
+   <updated>2008-01-11T18:07:39Z</updated>
+   <id>http://www.atlantageek.com/2008/01/11/google-blog</id>
+   <content type="html">&lt;p&gt;Found an interesting blog called &lt;a href=&quot;http://blogoscoped.com&quot;&gt;Google blogscoped&lt;/a&gt; .  Looks like its all about the google statistics.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Visualizing Data by Ben Fry</title>
+   <link href="http://www.atlantageek.com/2008/01/11/visualizing-data-by-ben-fry/"/>
+   <updated>2008-01-11T05:43:56Z</updated>
+   <id>http://www.atlantageek.com/2008/01/11/visualizing-data-by-ben-fry</id>
+   <content type="html">&lt;p&gt;I just got this book a few days ago and I&#39;m not really that impressed.  It seems it is focusing on a Java tool called &#39;Processing&#39; that. He spends more time on how to write code for this tool than on designing data visualization interfaces.&lt;/p&gt;
+
+&lt;p&gt;This is unfortunate, I was hoping for a &lt;a href=&quot;http://books.google.com/books?id=JNoBAAAACAAJ&amp;amp;dq=inauthor:Edward+inauthor:R+inauthor:Tufte&amp;amp;ei=RwGHR_67Go307QL0vJyVBg&quot;&gt;Tufte &lt;/a&gt;type book updated to the interactive environment we have today. That would be something useful. Instead I get a tool manual.  I still have 2/3 of the book left.  Hopefully it improves.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Zed's Rant.</title>
+   <link href="http://www.atlantageek.com/2008/01/04/zeds-rant/"/>
+   <updated>2008-01-04T02:52:13Z</updated>
+   <id>http://www.atlantageek.com/2008/01/04/zeds-rant</id>
+   <content type="html">&lt;p&gt;I just read Zed&#39;s rant. (Zed is the developer of Mongrel, a recent &amp;amp; popular web server written in Ruby)  Interesting stuff. Not just because he obviously has an Axe to grind but he does give a look at all the stuff going on behind the scenes with Ruby and Rails.&lt;/p&gt;
+
+&lt;p&gt;One item that caught my interest was the assertion that Japanese developers ignoring patch submissions from developers. Ruby does have some major performance issues. There is a reason there are at least 2 virtual machines (Rubinus and JRuby) being developed to compete with the current Ruby. And I do wonder if part of the problem is the (spoken) language barrier between the core team and a good chunk of the user market.&lt;/p&gt;
+
+&lt;p&gt;Maybe it is time for the language to branch.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>The Elements of online Journalism</title>
+   <link href="http://www.atlantageek.com/2008/01/03/the-elements-of-online-journalism/"/>
+   <updated>2008-01-03T05:19:41Z</updated>
+   <id>http://www.atlantageek.com/2008/01/03/the-elements-of-online-journalism</id>
+   <content type="html">&lt;p&gt;One of the fringe benefits of married life is having someone to get you those Christmas gifts you can&#39;t bring your self to buy. And for me those gifts are books. And the week between Christmas and New Year is the best time to read them.&lt;/p&gt;
+
+&lt;p&gt;One of my books is &quot;The Elements of Online Journalism&quot;  by Rey G. Rosales. Its a nice little overpriced pamphlet of a book topping off at 50 pages. Its targeted to existing journalist who are interested in online journalism. Rosales suggests that there is more to online journalism than just reprinting new paper articles and photos. He talks a lot about flash animations that allow the reader to view and explore data.&lt;/p&gt;
+
+&lt;p&gt;This is the type of stuff I&#39;m interested in. Why aren&#39;t there more examples of this out there. There are a few apps out there that do a good job of this. For the last presidential election one newspaper generate a flash animation that let you play what if scenarios with the electoral college. The app would categorize states in to 5 groups depending on how likely Bush or Kerry was to win the state with an undecided group right in the middle.  The user could assign electoral votes to one president or another and see how close the candidate was winning. A use could get a much better understanding of the race than any news paper article could give them.&lt;/p&gt;
+
+&lt;p&gt;So why are there not more of these animations.  Where is the animation showing the time line of the Iraq and Afghanistan war. Or showing how the housing boom busted. Why is there not a company that all it does is generate these animations and then rent or sell them to newspapers and other media outlets. A few mentions on Slashdot or digg should pay for the operating cost of a couple of Indian programmers and a couple of guys in the states designing and selling the ideas.&lt;/p&gt;
+
+&lt;p&gt;I have two more books to read &quot;Flash Journalism&quot; by Mindy McAdams and Visualizing Data by Ben Fry.  Flash Journalism gives more examples of the journalistic flash animations mentioned above. Visualizing data is about communicating data with graphs.  Another excellent read.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ 
+</feed>

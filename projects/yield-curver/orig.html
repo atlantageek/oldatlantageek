@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Flot Examples: Basic Usage</title>
+	<link href="flot_support_files/examples.css" rel="stylesheet" type="text/css">
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../../excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="flot_support_files/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="flot_support_files/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="flot_support_files/data.js"></script>
+	<script language="javascript" type="text/javascript" src="flot_support_files/knockout-2.3.0.js"></script>
+	<script type="text/javascript">
+	var yield_curve;
+	var start_val = 0;
+
+	function AppViewModel() {
+		this.index = ko.observable(0);
+		this.yield_date = ko.computed(function() {
+			var dt =  new Date(1982,0,4);
+			dt.setDate( dt.getDate() + (this.index()));
+			return (dt );
+		},this);
+			
+	}
+
+	var avm = new AppViewModel();
+	$(function() {
+
+		var d1 = []
+		for (var i = 0; i < data[0].length; i += 1) {
+			d1.push([i, data[0][i]*1.0/100.0]);
+		}
+
+
+
+		yield_curve = $.plot("#placeholder", [ d1 ], 
+			{
+				yaxis: { min:0.0, max:17.0}
+			});
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+		yield_curve.setData([{data:d1}]);
+		yield_curve.draw();
+		tid = setInterval(updateCurve, 50);
+		ko.applyBindings(avm);
+		
+	});
+	function updateCurve()
+	{
+		start_val++;
+		var d1 = [];
+		if (data[start_val] == null){ return }
+		for (var i = 0; i < data[0].length; i += 1) {
+			d1.push([i, data[start_val][i] * 1.0 / 100.0]);
+		}
+		avm.index(start_val);
+		yield_curve.setData([{data:d1}]);
+		yield_curve.draw()
+	}
+
+	</script>
+	
+</head>
+<body>
+
+	<div id="header">
+		<h2 data-bind="text: yield_date">x</h2>
+	</div>
+
+	<div id="content">
+
+		<div class="demo-container">
+			<div id="placeholder" class="demo-placeholder"></div>
+		</div>
+
+		<p>You don't have to do much to get an attractive plot.  Create a placeholder, make sure it has dimensions (so Flot knows at what size to draw the plot), then call the plot function with your data.</p>
+
+		<p>The axes are automatically scaled.</p>
+
+	</div>
+
+	<div id="footer">
+		Copyright &copy; 2007 - 2013 IOLA and Ole Laursen
+	</div>
+
+</body>
+</html>
+

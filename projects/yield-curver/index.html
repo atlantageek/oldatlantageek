@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Animated Yield Curve</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="flot_support_files/examples.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../../excanvas.min.js"></script><![endif]-->
+	<script language="javascript" type="text/javascript" src="flot_support_files/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="flot_support_files/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="flot_support_files/data.js"></script>
+	<script language="javascript" type="text/javascript" src="flot_support_files/knockout-2.3.0.js"></script>
+	<script type="text/javascript">
+	var yield_curve;
+	var start_val = 0;
+	var avm = new AppViewModel();
+	var tmr;
+
+	function AppViewModel() {
+		var time_list = [0,1000,500,250, 125, 75,50];
+		var phrase_list= ["Paused","1 week/second","2 weeks/second","4 weeks/second", "8 weeks/second", "13 weeks/second","20 weeks/second"];
+		this.speed = ko.observable(1);
+		this.yield_date = ko.observable("");
+		this.anim_speed = ko.observable("1 week/second");
+
+		this.backward = function() {
+			var curr = this.speed();
+			if (curr > -6) { this.speed(curr - 1);}
+			clearInterval(tmr);
+			var phrase = phrase_list[Math.abs(this.speed())]
+			if (this.speed() < 0) {phrase = phrase + " back in time."}
+			this.anim_speed(phrase);
+			
+		        tmr = setInterval(updateCurve, time_list[Math.abs(this.speed())]);
+		}
+		this.forward = function() {
+			var curr = this.speed();
+			if (curr < 6) { this.speed(curr + 1);}
+			clearInterval(tmr);
+		        tmr = setInterval(updateCurve, time_list[Math.abs(this.speed())]);
+
+			var phrase = phrase_list[Math.abs(this.speed())]
+			if (this.speed() < 0) {phrase = phrase + " back in time"}
+			this.anim_speed(phrase);
+		}
+		this.stopit = function() {
+			this.speed(0);
+			clearInterval(tmr);
+		        tmr = setInterval(updateCurve, time_list[0]);
+			this.anim_speed("Paused");
+		}
+
+			
+	};
+        function get_slope(dataset)
+        {
+                var y_total=0;
+                var y_avg=0;
+                var len = dataset.length - 1;
+                var x_avg=(len+ 1)/2;
+                var x_squared_total = len  * (len + 1) * (2 * len + 1)/6;
+                var xy_total = 0;
+                var i=0;
+                for (var i = 1; i<dataset.length;i++)
+                {
+                        xy_total += i * dataset[i] ;
+                        y_total += dataset[i]
+                }
+                y_avg = y_total / len;
+                var slope = (xy_total  - len * x_avg * y_avg) /
+                        (x_squared_total -len * x_avg * x_avg);
+                return slope;
+        }
+
+
+
+	$(function() {
+
+		var d1 = []
+		
+		for (var i = 1; i < data[0].length; i += 1) { //#skip the first value
+			d1.push([i, data[start_val][i] * 1.0 / 100.0]);
+		}
+		avm.yield_date(data[0][0]);
+
+
+
+		yield_curve = $.plot("#placeholder", [ d1 ], 
+			{
+				yaxis: { min:0.0, max:17.0},
+				xaxis: { 
+					ticks:[[0,"3 months"],[1,"6 months"],[2,"1 year"],[3,"2 years"],[4, "3years"],[5,"5 years"],[6,"10 years"],[7,"20 years"]]
+					},
+			series: {
+				lines: { show: true },
+				points: { show: true }
+			},
+			});
+
+		// Add the Flot version string to the footer
+
+		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+		yield_curve.setData([{data:d1}]);
+		yield_curve.draw();
+		tmr = setInterval(updateCurve, 1000);
+		ko.applyBindings(avm);
+		
+	});
+	function updateCurve()
+	{	
+		if (avm.speed() < 0) {start_val--;}
+		else if (avm.speed() > 0) {start_val++;}
+		if (start_val < 0) {start_val = 0;avm.speed(0);}
+		if (start_val >= data.length) {start_val = data.length - 1;avm.speed(0);}
+		var d1 = [];
+		if (data[start_val] == null){ return }
+		avm.yield_date(data[start_val][0]);
+		for (var i = 1; i < data[0].length; i += 1) {
+			d1.push([i, data[start_val][i] * 1.0 / 100.0]);
+		}
+		yield_curve.setData([{data:d1}]);
+		yield_curve.draw();
+	}
+	</script>
+  </head>
+
+
+
+	
+<body>
+  <div class="container">
+      <div class="page-header">
+        <h1>Yield Curve</h1>
+        <p class="lead">See how the rate curve has changed over time.</p>
+      </div>
+      	<div class="row">
+        	<div class="col-md-2">&nbsp;</div>
+        	<div class="col-md-8">
+		<h4 data-bind="text: yield_date"></h4>
+			<div class="demo-container">
+				<div id="placeholder" class="demo-placeholder"></div>
+			</div>
+        	</div>
+        	<div class="col-md-2">&nbsp;</div>
+
+      	</div> <!-- row -->
+      	<div class="row">
+        	<div class="col-md-2">&nbsp;</div>
+        	<div class="col-md-8">
+		<button type="button" data-bind="click: backward" class="btn btn-default btn-lg">
+  			<span class="glyphicon glyphicon-backward"></span> Slower
+		</button>
+		<button type="button" data-bind="click: stopit" class="btn btn-default btn-lg">
+  			<span class="glyphicon glyphicon-pause"></span> Pause
+		</button>
+		<button type="button" data-bind="click: forward" class="btn btn-default btn-lg">
+  			<span class="glyphicon glyphicon-forward"></span> Faster
+		</button>
+		<strong data-bind="text: anim_speed"></strong>
+        	</div>
+        	<div class="col-md-2">&nbsp;</div>
+
+      	</div> <!-- row -->
+
+	<div id="footer">
+		Copyright &copy; 2007 - 2014 Tommie Jones
+	</div>
+     </div>
+    <script src="js/bootstrap.min.js"></script>
+  </div> <!-- container -->
+</body>
+</html>
+
