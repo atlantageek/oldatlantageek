@@ -1,0 +1,101 @@
+ <!DOCTYPE html> 
+<html lang="en-US">
+<head>
+    <title>DHT3 Spectrum Analyzer</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="assets/css/global.css" type="text/css">
+  <script src="assets/js/jquery-1.7.1.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/admin.min.js"></script>
+  <script src="dashboard.js"></script>
+</head>
+<body style="padding-top: 5px;">
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span2"><img src="electroline.jpg" width="200px"></div>
+  </div>
+
+
+  <!--<script src="/dashboard.js"></script>-->
+
+  <div class="row-fluid">
+    <div class="span9 columns">
+
+      <span class="db_meas">dBmV</span>
+          <div id="canvasesdiv" >
+            <div  style="position:relative;width:100%;height:510px;margin-left:auto;margin-right:auto;">
+              <canvas id="mycanvas"  height="500" width="1000" style="z-index:1;position:absolute;left:0px;top:0px;border:1px solid #000000"> </canvas>
+              <canvas id="mycanvas2" height="500" width="1000" style="z-index:2;position:absolute;left:0px;top:0px;border:1px solid #000000"> </canvas>
+              <canvas id="mycanvas3" height="500" width="1000" style="z-index:3;position:absolute;left:0px;top:0px;border:0px solid #000000"> </canvas>
+            </div>
+          </div>
+          <br><div>&nbsp;</div>
+
+        <br><p>
+    </div>
+    <div id ="sidebar" class="span3 columns">
+      <div class="well">
+        Reference(<span class="db_meas">dBmV</span>):&nbsp;<input type="text" id="reference" style='width:3em'><br>
+        Vertical Range(dB):&nbsp;<select id="divisions" style="width:4em"><option>110</option><option>55</option><option>30</option></select><p>
+        Averaging:&nbsp;<select id="averaging" style="width:4em"><option value="1">1</option><option value="5">5</option><option value="10" selected>10</option><option value="20">20</option></select>
+        RBW:&nbsp;<select id="rbw" style="width:7em"><option value="3000">3 MHz</option><option id="o1000" value="1000" >1 MHz</option>
+                                                     <option value="300" id="o300" selected>300 KHz</option>
+                                                     <option value="100" id="o100" >100 KHz</option>
+                                                     <option id="o30" value="30">30 KHz</option>
+        </select><p>
+        Start Freq(MHz):&nbsp;<input type="text" id="start_freq" style='width:3em'><br> Stop  Freq(MHz):&nbsp;<input type="text" id="stop_freq" style='width:3em'><p>
+        Center Freq(MHz):&nbsp;<input type="text" id="center_freq" style='width:3em'><br> Span(MHz):&nbsp;<input type="text" id="bandwidth" style='width:3em'><p>
+        <input type="checkbox" id="max_hold_checkbox" >&nbsp;Max Hold<br>
+        <input type="checkbox" id="trace_checkbox" checked>&nbsp;Trace<br>
+        <input type="checkbox" id="min_hold_checkbox" size="4" >&nbsp;Min Hold<p>
+        <button class="btn" onclick="generate_csv_file()">Download</button> 
+        <button class="btn" onclick="reset_extremes()">Reset</button> 
+        <button id="pauseplay" class="btn" onclick="pause_play()">Pause</button>
+        <button id="dbmtoggle" class="btn" onclick="dbm_dbmv()">dBuV</button><p>
+        <div class="input-append">
+        <input id="snapshot_title" style="width:50%" type="text" placeholder="Snapshot title">
+        <button id="store_button" class="btn"  onclick="addtrace()" disabled>Snapshot</button> 
+        </div>
+        <select id="snapshot_select"><option value="">No Snapshot Selected</option></select>
+      </div>
+      <div class="well">
+        <h3>Markers (<em class="current_marker_mode">No Channel Mode</em>)</h3>
+        <form>
+            <button type="button" class="btn" onclick="clear_markers()">Reset Markers</button> 
+            <button id="marker_mode_toggle" type="button" class="btn" onclick="marker_mode_chg()">6 MHz mode</button> 
+          <div id="test-group" class="btn-group" data-toggle="buttons-radio" data-toggle-name="testOption">
+            <input type="hidden" name="testOption"/>
+            <button type="button" class="btn" data-toggle-value="hmarker1">H. Marker 1</button> <button type="button" class="btn" data-toggle-value="hmarker2">H. Marker 2</button>
+            <button type="button" class="btn" data-toggle-value="marker1">V. Marker 1</button> <button type="button" class="btn" data-toggle-value="marker2">V. Marker 2</button>
+          </div>
+        </form>
+      <table class="table">
+        <tr>
+          <th>labels</th><th>Marker 1</th><th>Marker 2</th><th>Delta</th>
+        </tr>
+        <tr><th>Freq(MHz):</th><td><b id="marker1_freq"></td><td><b id="marker2_freq"></td><td><b id="freq_delta"></td></tr>
+            <tr><th>Level(<span class="db_meas">dBmV</span>): </th><td><b id="marker1_level"></td><td><b id="marker2_level"></td><td><b id="delta_level"></td></tr>
+            <tr><th>Max(<span class="db_meas">dBmV</span>): </th><td><b id="marker1_max"></td><td><b id="marker2_max"></td><td><b id="delta_max"></td></tr>
+            <tr><th>Min(<span class="db_meas">dBmV</span>): </th><td><b id="marker1_min"></td><td><b id="marker2_min"></td><td> <b id="delta_min"></td></tr>
+      </table>
+      <b>Power Between Markers: </b><span id="power_meas"></span>
+      <table class="table">
+        <tr> <th>Horz. Marker 1</th><th>Horz. Marker 2</th><th>Delta</th> </tr>
+            <tr><td><b id="hmarker1_level"></td><td><b id="hmarker2_level"></td><td><b id="hdelta_level"></td></tr>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+  <div id="footer">
+    <hr>
+    <div class="inner">
+      <div class="container">
+        <p class="right">
+          <a href="#">Back to top</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
