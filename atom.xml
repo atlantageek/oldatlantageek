@@ -4,12 +4,38 @@
  <title>Tommie Jones</title>
  <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
  <link href="http://www.atlantageek.com/"/>
- <updated>2014-03-17T19:37:32-04:00</updated>
+ <updated>2014-03-30T01:30:14-04:00</updated>
  <id>http://www.atlantageek.com</id>
  <author>
    <name>Tommie Jones</name>
  </author>
  
+ 
+ <entry>
+   <title>nodejs-as-a-windows-service</title>
+   <link href="http://www.atlantageek.com/2014/03/28/nodejs-as-a-windows-service/"/>
+   <updated>2014-03-28T00:00:00-04:00</updated>
+   <id>http://www.atlantageek.com/2014/03/28/nodejs-as-a-windows-service</id>
+   <content type="html">&lt;p&gt;To install node.js as a windows service you need three items.
+* NSSM http://nssm.cc/download
+* node.js for windows . http://nodejs.org/download
+* Your node.js application.&lt;/p&gt;
+
+&lt;p&gt;Unzip your node.js code in a directory.  Let&#39;s say its c:\helloworld\hi.js
+Install both nssm and node.js for windows.  Let&#39;s assume that node.js is in c:\Users\atlantageek\node.exe&lt;/p&gt;
+
+&lt;p&gt;Run &#39;nssm install&#39; from the directory you installed nssm. A window will pop up.  On my version it looks similar to the following.
+*The path will be the path to node.js
+* Startup directory will be the path where the js code and modules are located.
+* The options will be the actual js appliction file. For my example it will look like the following.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/nssm.png&quot; alt=&quot;nssm service installer&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the very basic that you need.  You can also define Standard In and Standard Out redirection in the I/O tab.&lt;/p&gt;
+
+&lt;p&gt;Once the service is created. You can start and stop it from services manager thats built into windows.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Cheatsheet for Flot</title>
@@ -507,9 +533,9 @@ lc.init();
  
  <entry>
    <title>Redesign of Wi-spy Web interface.</title>
-   <link href="http://www.atlantageek.com/2013/08/18/redesign-wi-spy-web-interface/"/>
-   <updated>2013-08-18T02:46:21Z</updated>
-   <id>http://www.atlantageek.com/2013/08/18/redesign-wi-spy-web-interface</id>
+   <link href="http://www.atlantageek.com/2013/08/17/redesign-wi-spy-web-interface/"/>
+   <updated>2013-08-17T22:46:21-04:00</updated>
+   <id>http://www.atlantageek.com/2013/08/17/redesign-wi-spy-web-interface</id>
    <content type="html">&lt;p&gt;So originally I wanted to build a web inteface for the wi-spy spectrum analyzer. I proved the concept with the first version.  You can watch the  &lt;a href=&quot;http://www.youtube.com/watch?v=jj9u6VtkM3Y&quot;&gt;short video&lt;/a&gt;
 yourself that goes over the design. The biggest problem with the application was that it required a lot of infrastructure.  It required a special verion of spec_Tool to collect the data, node.js to supply the web server and a redis daemon to act inbetween.  When I started adding code to store off historical data I realized I&#39;d need another technology such as tokyo cabinet and the like. This proved even more difficult because I need a locking mechanism between the reader and the writer.&lt;/p&gt;
 
@@ -519,9 +545,9 @@ yourself that goes over the design. The biggest problem with the application was
  
  <entry>
    <title>DVRs for over the air TV</title>
-   <link href="http://www.atlantageek.com/2013/05/13/dvrs-for-over-the-air-tv/"/>
-   <updated>2013-05-13T02:46:21Z</updated>
-   <id>http://www.atlantageek.com/2013/05/13/dvrs-for-over-the-air-tv</id>
+   <link href="http://www.atlantageek.com/2013/05/12/dvrs-for-over-the-air-tv/"/>
+   <updated>2013-05-12T22:46:21-04:00</updated>
+   <id>http://www.atlantageek.com/2013/05/12/dvrs-for-over-the-air-tv</id>
    <content type="html">&lt;h1&gt;DVRs for over the air TV&lt;/h1&gt;
 
 &lt;p&gt;One of the advantages of cable service is something that is totally unrelated to their content.  The settop box is a great convience. The emergence of MSO provided DVRs has added a lot of value to their service. So if you really do want to cut the cord its time to consider how are you going to replace that $10/month leased settop box.&lt;/p&gt;
@@ -590,9 +616,9 @@ Used Tivos with lifetime memberships can be a good deal off of ebay. You can pic
  
  <entry>
    <title>Raspberry PI and metageek Wi Spy web interface</title>
-   <link href="http://www.atlantageek.com/2013/04/21/raspberry-pi-and-metageek-wi-spy-web-interface/"/>
-   <updated>2013-04-21T02:46:21Z</updated>
-   <id>http://www.atlantageek.com/2013/04/21/raspberry-pi-and-metageek-wi-spy-web-interface</id>
+   <link href="http://www.atlantageek.com/2013/04/20/raspberry-pi-and-metageek-wi-spy-web-interface/"/>
+   <updated>2013-04-20T22:46:21-04:00</updated>
+   <id>http://www.atlantageek.com/2013/04/20/raspberry-pi-and-metageek-wi-spy-web-interface</id>
    <content type="html">&lt;h2&gt;So what is it.&lt;/h2&gt;
 
 &lt;p&gt;Its a web interface to a metageek spectrum analyzer that runs on a wi-spy. I have a &lt;a href=&quot;http://www.youtube.com/watch?v=jj9u6VtkM3Y&quot;&gt;short video&lt;/a&gt; demostrating an early version of the software.&lt;/p&gt;
@@ -699,9 +725,9 @@ AND Operation      :  0  0  1  0  0  1  0  0  1  0  0  0  0  0  0  0  0  0
  
  <entry>
    <title>Rocking ltree on postgresql</title>
-   <link href="http://www.atlantageek.com/2012/10/26/rocking-ltree-on-postgresql/"/>
-   <updated>2012-10-26T02:46:21Z</updated>
-   <id>http://www.atlantageek.com/2012/10/26/rocking-ltree-on-postgresql</id>
+   <link href="http://www.atlantageek.com/2012/10/25/rocking-ltree-on-postgresql/"/>
+   <updated>2012-10-25T22:46:21-04:00</updated>
+   <id>http://www.atlantageek.com/2012/10/25/rocking-ltree-on-postgresql</id>
    <content type="html">&lt;p&gt;Postgresql 9.1 Now ships with a module called ltree. This is a cool postgresql that allows you to model hierarchies in you database and leverages the GIST indexing mechanism built into postgres.
 Assume you are modeling several organizations:&lt;/p&gt;
 
@@ -730,7 +756,7 @@ or give me all the stores (where the path is at least 4 items long)
  <entry>
    <title>adjusting innodb_log_file_size in  mysql to get around </title>
    <link href="http://www.atlantageek.com/2010/05/11/adjusting-innodb_log_file_size-in-mysql-to-get-around/"/>
-   <updated>2010-05-11T20:57:22Z</updated>
+   <updated>2010-05-11T16:57:22-04:00</updated>
    <id>http://www.atlantageek.com/2010/05/11/adjusting-innodb_log_file_size-in-mysql-to-get-around</id>
    <content type="html">&lt;p&gt;I was getting &quot;ERROR 1033 (HY000): Incorrect information in file: &#39;./realworx_production/analyzers.frm&#39;&quot; whenever I tried to adjust my mysql innodb parameters and run a query.
 To adjust this you have do delete or move the ib_logfile0 and ib_logfile1 file in your datadir.  Then start the database.
@@ -744,9 +770,9 @@ So step-by-step
  
  <entry>
    <title>Accessing a non standard database in rails</title>
-   <link href="http://www.atlantageek.com/2009/08/16/accessing-a-non-standard-database-in-rails/"/>
-   <updated>2009-08-16T00:32:24Z</updated>
-   <id>http://www.atlantageek.com/2009/08/16/accessing-a-non-standard-database-in-rails</id>
+   <link href="http://www.atlantageek.com/2009/08/15/accessing-a-non-standard-database-in-rails/"/>
+   <updated>2009-08-15T20:32:24-04:00</updated>
+   <id>http://www.atlantageek.com/2009/08/15/accessing-a-non-standard-database-in-rails</id>
    <content type="html">&lt;p&gt;Normally in rails you would configure a production, test and development database in the database.yml file.  If some of your rails data comes from a different database you can configure it in database.yml as well.  For example I wanted two rails applications to synchronize their databases occassionally.
 To do this I created a remote db in one of the rails application that looks like this in database.yml:&lt;/p&gt;
 
@@ -771,7 +797,7 @@ Now use ruby&#39;s mysql library to work with dbh&lt;/p&gt;
  <entry>
    <title>Is apple trying to do an endrun around the desktop</title>
    <link href="http://www.atlantageek.com/2009/08/14/is-apple-trying-to-do-an-endrun-around-the-desktop/"/>
-   <updated>2009-08-14T09:16:58Z</updated>
+   <updated>2009-08-14T05:16:58-04:00</updated>
    <id>http://www.atlantageek.com/2009/08/14/is-apple-trying-to-do-an-endrun-around-the-desktop</id>
    <content type="html">&lt;p&gt;A friend told me suggested apple was making a cradle that allowed you to connect your iphone to a monitor , keyboard and mouse.  This is an interesting idea.  Could apple try to make a dent into the desktop market by replacing the desktop. After all windows XP&#39;s minimum requirements includes a 233 MHz processor.  The iphone runs 600 MHz and Im sure the iphone&#39;s OS is not nearly as bloted as XP.  What is the real difference between an iphone and a Mac.&lt;/p&gt;
 </content>
@@ -780,7 +806,7 @@ Now use ruby&#39;s mysql library to work with dbh&lt;/p&gt;
  <entry>
    <title>writeMultibyte for Flex on Linux</title>
    <link href="http://www.atlantageek.com/2009/05/30/writemultibyte-for-flex-on-linux/"/>
-   <updated>2009-05-30T04:06:21Z</updated>
+   <updated>2009-05-30T00:06:21-04:00</updated>
    <id>http://www.atlantageek.com/2009/05/30/writemultibyte-for-flex-on-linux</id>
    <content type="html">&lt;p&gt;writeMultiByte is not working for linux (though it is fine in Windows) in Flashplayer 10.&amp;nbsp; It failed for me in the ByteArray class and I&#39;ve seen other postings that the issue exist for the binarySocket class as well. At least for the us-ascii encoding.&lt;/p&gt;
 
@@ -791,7 +817,7 @@ Now use ruby&#39;s mysql library to work with dbh&lt;/p&gt;
  <entry>
    <title>Radio Buttons act more like Combobox</title>
    <link href="http://www.atlantageek.com/2009/04/01/radio-buttons-act-more-like-combobox/"/>
-   <updated>2009-04-01T13:43:25Z</updated>
+   <updated>2009-04-01T09:43:25-04:00</updated>
    <id>http://www.atlantageek.com/2009/04/01/radio-buttons-act-more-like-combobox</id>
    <content type="html">&lt;p&gt;Normally what I would do with radio buttons is to look for a click event and set variables accordingly.&amp;nbsp; However there is another way to use radio button if you are operating more in a &#39;filling out a form&#39; approach.&lt;/p&gt;
 
@@ -810,7 +836,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>Verify ItemEditors input in a datagrid.</title>
    <link href="http://www.atlantageek.com/2009/03/27/verify-itemeditors-input-in-a-datagrid/"/>
-   <updated>2009-03-27T14:34:07Z</updated>
+   <updated>2009-03-27T10:34:07-04:00</updated>
    <id>http://www.atlantageek.com/2009/03/27/verify-itemeditors-input-in-a-datagrid</id>
    <content type="html">&lt;p&gt;Working a lot with ItemEditors in DataGrids.&lt;/p&gt;
 
@@ -825,7 +851,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>C Version of Adobe Flex Policy Server</title>
    <link href="http://www.atlantageek.com/2009/02/28/c-version-of-adobe-flex-policy-server/"/>
-   <updated>2009-02-28T12:54:10Z</updated>
+   <updated>2009-02-28T07:54:10-05:00</updated>
    <id>http://www.atlantageek.com/2009/02/28/c-version-of-adobe-flex-policy-server</id>
    <content type="html">&lt;p&gt;Here is a rewrite of the adobe flex policy server written in C.&lt;/p&gt;
 
@@ -838,7 +864,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>MINI SA from dunehaven</title>
    <link href="http://www.atlantageek.com/2009/02/07/mini-sa-from-dunehaven/"/>
-   <updated>2009-02-07T06:01:14Z</updated>
+   <updated>2009-02-07T01:01:14-05:00</updated>
    <id>http://www.atlantageek.com/2009/02/07/mini-sa-from-dunehaven</id>
    <content type="html">&lt;p&gt;I just got a mini SA board from dunehven.com. My goal was to write a flex UI for a spectrum analyzer. Somr ething I&#39;ve done at work but unable to demo or discuss. So I&#39;ve been looking for a cheap spectrum analyzer to supply the  rf data.  I&#39;ve been considering a wi-spy but am unable to bring myself to buying a $200 device for this project.  Ebay never gave me joy on finding a cheaper model.  I&#39;ve bidded on 2 or 3 models bug gave up at 120 dollars.&lt;/p&gt;
 
@@ -855,7 +881,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>Time for a new Mysql storage engine written for Nvidia Cuda</title>
    <link href="http://www.atlantageek.com/2008/11/14/time-for-a-new-mysql-storage-engine-written-for-nvidia-cuda/"/>
-   <updated>2008-11-14T21:34:22Z</updated>
+   <updated>2008-11-14T16:34:22-05:00</updated>
    <id>http://www.atlantageek.com/2008/11/14/time-for-a-new-mysql-storage-engine-written-for-nvidia-cuda</id>
    <content type="html">&lt;p&gt;I always assumed DBs were IO bound but my work at Retek and now from what I am reading here on &lt;a href=&quot;http://www.cse.ust.hk/catalac/papers/gpujoin_sigmod08.pdf&quot; title=&quot;join performance with CUDA&quot;&gt;join performance &lt;/a&gt;seems like it might be more CPU bound. Maybe its time for a Nvidia Cuda based storage engine for mysql.&lt;/p&gt;
 </content>
@@ -864,7 +890,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>Outsource the Scaffolding</title>
    <link href="http://www.atlantageek.com/2008/10/27/outsource-the-scaffolding/"/>
-   <updated>2008-10-27T12:18:58Z</updated>
+   <updated>2008-10-27T08:18:58-04:00</updated>
    <id>http://www.atlantageek.com/2008/10/27/outsource-the-scaffolding</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://blog.kischuk.com/2008/08/11/outsource-the-scaffolding/trackback/&quot;&gt;Outsourcing the scaffolding&lt;/a&gt; is an article from a fellow Atlantian discussing how best to oursource code. His thesis is that you should only outsource the the initial version or core product.  Once you get into the details where the problem is nolonger simple you need to bring it in house.&lt;/p&gt;
 
@@ -875,7 +901,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>Proposed policy. Get rid of the Drug Micro Monopoly.</title>
    <link href="http://www.atlantageek.com/2008/10/18/proposed-policy-get-rid-of-the-drug-micro-monopoly/"/>
-   <updated>2008-10-18T18:49:51Z</updated>
+   <updated>2008-10-18T14:49:51-04:00</updated>
    <id>http://www.atlantageek.com/2008/10/18/proposed-policy-get-rid-of-the-drug-micro-monopoly</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;Require multiple suppliers for any FDA approved drugs.&lt;/strong&gt;&lt;/p&gt;
 
@@ -890,7 +916,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>REO Database</title>
    <link href="http://www.atlantageek.com/2008/09/25/reo-database/"/>
-   <updated>2008-09-25T10:07:49Z</updated>
+   <updated>2008-09-25T06:07:49-04:00</updated>
    <id>http://www.atlantageek.com/2008/09/25/reo-database</id>
    <content type="html">&lt;p&gt;A list of websites featuring Bank Owned Properties.&lt;/p&gt;
 
@@ -927,7 +953,7 @@ It now works more like a combobox instead of individual buttons. The label will 
  <entry>
    <title>Available Data Sources</title>
    <link href="http://www.atlantageek.com/2008/09/12/available-data-sources/"/>
-   <updated>2008-09-12T16:54:02Z</updated>
+   <updated>2008-09-12T12:54:02-04:00</updated>
    <id>http://www.atlantageek.com/2008/09/12/available-data-sources</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;APIs&lt;/strong&gt;&lt;/p&gt;
 
@@ -957,7 +983,7 @@ Shopping
  <entry>
    <title>Education.com's API for Schools</title>
    <link href="http://www.atlantageek.com/2008/09/12/educationcoms-api-for-schools/"/>
-   <updated>2008-09-12T16:52:51Z</updated>
+   <updated>2008-09-12T12:52:51-04:00</updated>
    <id>http://www.atlantageek.com/2008/09/12/educationcoms-api-for-schools</id>
    <content type="html">&lt;p&gt;Now you can integrate school information into you mashup with education.com&#39;s school api.&amp;nbsp; Get your key &lt;a href=&quot;http://www.education.com/webservice/request&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
@@ -968,7 +994,7 @@ Shopping
  <entry>
    <title>Tools to develop flex on linux</title>
    <link href="http://www.atlantageek.com/2008/09/11/tools-to-develop-flex-on-linux/"/>
-   <updated>2008-09-11T11:35:10Z</updated>
+   <updated>2008-09-11T07:35:10-04:00</updated>
    <id>http://www.atlantageek.com/2008/09/11/tools-to-develop-flex-on-linux</id>
    <content type="html">&lt;p&gt;Sometimes you need to write a debug log when developing flex. The best way to do that in linux is first configure your ~/mm.cfg file with the following:&lt;/p&gt;
 
@@ -985,9 +1011,9 @@ And no this is current as of 2008-9-11, well after the macromedia/adobe merge.  
  
  <entry>
    <title>The Hidden Knowledge Mangement system.</title>
-   <link href="http://www.atlantageek.com/2008/09/08/the-hidden-knowledgemangement-system/"/>
-   <updated>2008-09-08T02:19:02Z</updated>
-   <id>http://www.atlantageek.com/2008/09/08/the-hidden-knowledgemangement-system</id>
+   <link href="http://www.atlantageek.com/2008/09/07/the-hidden-knowledgemangement-system/"/>
+   <updated>2008-09-07T22:19:02-04:00</updated>
+   <id>http://www.atlantageek.com/2008/09/07/the-hidden-knowledgemangement-system</id>
    <content type="html">&lt;p&gt;I&#39;ve recently read Datawocky&#39;s article on &lt;a href=&quot;http://anand.typepad.com/datawocky/2008/07/stop-email-overload-and-break-silos-using-wikis-blogs-and-im.html&quot;&gt;Replacing Email with blogs, wikis and IM&lt;/a&gt;. Its has some good ideas however the devil is in the details. The advantage of email is that it is convenient for the creator. If it is not convenient for the creator then they are less likely to create/send the data. It might be correct that the 3 system approach would be easier to retrieve data but if it reduces the amount of electronic data then it only hurts the communications.&lt;/p&gt;
 
 &lt;p&gt;I think a better approach would be to have special email addresses that automatically publish the content and responses of the emails themselves. We see this for mailing lists on the internet today. Any email written to low level groups in your organization could be published to an internal website.
@@ -1002,7 +1028,7 @@ However this does not solve the multiple document revisions being passed back an
  <entry>
    <title>Knowledge Management in Services</title>
    <link href="http://www.atlantageek.com/2008/09/07/knowledge-management-in-services/"/>
-   <updated>2008-09-07T09:21:17Z</updated>
+   <updated>2008-09-07T05:21:17-04:00</updated>
    <id>http://www.atlantageek.com/2008/09/07/knowledge-management-in-services</id>
    <content type="html">&lt;p&gt;Just came back from a competitive bidding event. My company was one of the 5 suppliers that were bidding on replacing the customers test equipment with our equipment. We interviewed everyone from the guys in the back office to the guys in the field and the interviewees scored us on the types of questions we asked.&lt;/p&gt;
 
@@ -1015,7 +1041,7 @@ However this does not solve the multiple document revisions being passed back an
  <entry>
    <title>FlashPlayerTrust on Gnu/Linux</title>
    <link href="http://www.atlantageek.com/2008/08/27/flashplayertrust-on-gnulinux/"/>
-   <updated>2008-08-27T11:26:50Z</updated>
+   <updated>2008-08-27T07:26:50-04:00</updated>
    <id>http://www.atlantageek.com/2008/08/27/flashplayertrust-on-gnulinux</id>
    <content type="html">&lt;p&gt;I was getting Security Sandbox violations in my flash log. I was trying to read a local file and to connect to the network. This is for development reasons only. The final version is all web. Anyway to resolve this on my linux system I created a file with the top level paths that ended in .cfg. You can place  the file in the dir: /home/{user}/.macromedia/Flash_Player/#Security/FlashPlayerTrust directory.
 For this to affect all users you put it in this directory.
@@ -1038,18 +1064,18 @@ For this to affect all users you put it in this directory.
  
  <entry>
    <title>Edward Tufte</title>
-   <link href="http://www.atlantageek.com/2008/03/27/edward-tufte/"/>
-   <updated>2008-03-27T02:35:07Z</updated>
-   <id>http://www.atlantageek.com/2008/03/27/edward-tufte</id>
+   <link href="http://www.atlantageek.com/2008/03/26/edward-tufte/"/>
+   <updated>2008-03-26T22:35:07-04:00</updated>
+   <id>http://www.atlantageek.com/2008/03/26/edward-tufte</id>
    <content type="html">&lt;p&gt;Yesterday I went to the Edward Tufte&lt;a href=&quot;http://www.edwardtufte.com/tufte/courses&quot;&gt; Course&lt;/a&gt; that my company sent me on. I&#39;m trying to figure out how I can keep the books.The Class rocked.  I was inspired by some of the stuff with &lt;a href=&quot;http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0001OR&amp;amp;topic_id=1&quot;&gt;SparkLines&lt;/a&gt; Got some great ideas for the Dashboard design that we&#39;ve been struggling with. Also learned a few other things. Edward Tufte hates Microsoft, loves the iphone and thinks that a handout beats powerpoint any day. I have to admit he made some great points. For instance.1. Data Throughput is slow during Powerpoint presentations2. Handouts that are engrossing are a good thing. Even if the audience ignores you.3. Handouts can sit there for hours while a powerpoint is on display for only a few minutes.  And what better way to unsurp your competitor than by giving the potential client something to read during the competitors boring presentation.Other things I learned. Minimize space dedicated to controls. I must have known this already.  I love VI editor because there is little space dedicated to controls.  Its all about the content.  Where as on most IDEs you are luck to get 25% of the screen used for editing code. Hell on this entry form my text box is luck to be 15% of the screen. So I&#39;ll look for ways to hide controls.That is the Gist of what I learned. I truly enjoyed this class and I should have taken it a year earlier.&lt;/p&gt;
 </content>
  </entry>
  
  <entry>
    <title>A small trick when developing flex code that talks to hosting server</title>
-   <link href="http://www.atlantageek.com/2008/03/22/a-small-trick-when-developing-flex-code-that-talks-to-hosting-server/"/>
-   <updated>2008-03-22T02:05:52Z</updated>
-   <id>http://www.atlantageek.com/2008/03/22/a-small-trick-when-developing-flex-code-that-talks-to-hosting-server</id>
+   <link href="http://www.atlantageek.com/2008/03/21/a-small-trick-when-developing-flex-code-that-talks-to-hosting-server/"/>
+   <updated>2008-03-21T22:05:52-04:00</updated>
+   <id>http://www.atlantageek.com/2008/03/21/a-small-trick-when-developing-flex-code-that-talks-to-hosting-server</id>
    <content type="html">&lt;p&gt;I often develop my flex code on a machine that is not running a web server. So I have to hardcode the IP of a working server when I need to pull data from the hosting server.&lt;/p&gt;
 
 &lt;p&gt;This can be a pain because before you checkin the code you have to remember to change the method of pulling the IP address.&lt;/p&gt;
@@ -1073,7 +1099,7 @@ Obviously this is for web services but this technique can be used for sockets as
  <entry>
    <title>SNMP and Ruby</title>
    <link href="http://www.atlantageek.com/2008/02/27/snmp-and-ruby/"/>
-   <updated>2008-02-27T18:19:20Z</updated>
+   <updated>2008-02-27T13:19:20-05:00</updated>
    <id>http://www.atlantageek.com/2008/02/27/snmp-and-ruby</id>
    <content type="html">&lt;p&gt;Working with SNMP can be challenging. If you are a Newbie to SNMP and are trying to do something a little unusual (Writing a Ruby agent that sends snmp traps) you probably have trouble finding examples.  So I&#39;ve been fighting SNMP for a few days and here are some notes.&lt;/p&gt;
 
@@ -1116,7 +1142,7 @@ end
  <entry>
    <title>Resume</title>
    <link href="http://www.atlantageek.com/2008/02/06/resume/"/>
-   <updated>2008-02-06T06:56:18Z</updated>
+   <updated>2008-02-06T01:56:18-05:00</updated>
    <id>http://www.atlantageek.com/2008/02/06/resume</id>
    <content type="html">&lt;p&gt;Tommie M. Jones&lt;/p&gt;
 
@@ -1251,7 +1277,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>Areaware Mango Wooden Radio</title>
    <link href="http://www.atlantageek.com/2008/01/30/areaware-mango-wooden-radio/"/>
-   <updated>2008-01-30T20:14:19Z</updated>
+   <updated>2008-01-30T15:14:19-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/30/areaware-mango-wooden-radio</id>
    <content type="html">&lt;p&gt;A really cool looking design.&amp;nbsp; Apparently the goal was to create stuff that traditional craftsmen using sustainable materials to create high value products.&amp;nbsp; Singgih Kartono came up with the &lt;a href=&quot;http://areaware.com/?p=21253&amp;amp;lng=en&amp;amp;id=221&quot;&gt;Areaware Mango Wooden Radio&lt;/a&gt; . I like the idea but I thing a clock design would have carried over better.&amp;nbsp; I have trouble dedicating that much space to an object I rarely need to look at from afar.&amp;nbsp; By the way why someone needs to mix a cool wall clock with an mp3 player.&amp;nbsp; Now that would rock.&lt;/p&gt;
 </content>
@@ -1260,7 +1286,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</title>
    <link href="http://www.atlantageek.com/2008/01/30/adobe-developer-center-designing-for-flex-%25e2%2580%2593-part-3-structuring-your-application/"/>
-   <updated>2008-01-30T11:54:21Z</updated>
+   <updated>2008-01-30T06:54:21-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/30/adobe-developer-center-designing-for-flex-%e2%80%93-part-3-structuring-your-application</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://www.adobe.com/devnet/flex/articles/fig_pt3_02.html&quot;&gt;Adobe - Developer Center : Designing for Flex &amp;ndash; Part 3: Structuring your application&lt;/a&gt;&lt;/p&gt;
 </content>
@@ -1269,7 +1295,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>Sun Buys Mysql</title>
    <link href="http://www.atlantageek.com/2008/01/16/sun-buys-mysql/"/>
-   <updated>2008-01-16T14:38:44Z</updated>
+   <updated>2008-01-16T09:38:44-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/16/sun-buys-mysql</id>
    <content type="html">&lt;p&gt;Excellent news. Sun acquires Mysql.&lt;/p&gt;
 
@@ -1290,7 +1316,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>ChRoMicro - Cheap Robotic Microhelicopter HOWTO</title>
    <link href="http://www.atlantageek.com/2008/01/15/chromicro-cheap-robotic-microhelicopter-howto/"/>
-   <updated>2008-01-15T19:18:58Z</updated>
+   <updated>2008-01-15T14:18:58-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/15/chromicro-cheap-robotic-microhelicopter-howto</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://www.pabr.org/chromicro/doc/chromicro.en.html&quot;&gt;ChRoMicro - Cheap Robotic Microhelicopter HOWTO&lt;/a&gt;&lt;/p&gt;
 </content>
@@ -1299,7 +1325,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>Inter-Sections &raquo; Blog Archive &raquo; How to recognise a good programmer</title>
    <link href="http://www.atlantageek.com/2008/01/11/inter-sections-%25c2%25bb-blog-archive-%25c2%25bb-how-to-recognise-a-good-programmer/"/>
-   <updated>2008-01-11T20:46:32Z</updated>
+   <updated>2008-01-11T15:46:32-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/11/inter-sections-%c2%bb-blog-archive-%c2%bb-how-to-recognise-a-good-programmer</id>
    <content type="html">&lt;p&gt;A good essay on how to find a good programmer.&lt;/p&gt;
 
@@ -1310,7 +1336,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>Google Blog</title>
    <link href="http://www.atlantageek.com/2008/01/11/google-blog/"/>
-   <updated>2008-01-11T18:07:39Z</updated>
+   <updated>2008-01-11T13:07:39-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/11/google-blog</id>
    <content type="html">&lt;p&gt;Found an interesting blog called &lt;a href=&quot;http://blogoscoped.com&quot;&gt;Google blogscoped&lt;/a&gt; .  Looks like its all about the google statistics.&lt;/p&gt;
 </content>
@@ -1319,7 +1345,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>Visualizing Data by Ben Fry</title>
    <link href="http://www.atlantageek.com/2008/01/11/visualizing-data-by-ben-fry/"/>
-   <updated>2008-01-11T05:43:56Z</updated>
+   <updated>2008-01-11T00:43:56-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/11/visualizing-data-by-ben-fry</id>
    <content type="html">&lt;p&gt;I just got this book a few days ago and I&#39;m not really that impressed.  It seems it is focusing on a Java tool called &#39;Processing&#39; that. He spends more time on how to write code for this tool than on designing data visualization interfaces.&lt;/p&gt;
 
@@ -1329,9 +1355,9 @@ References available upon request&lt;/p&gt;
  
  <entry>
    <title>Zed's Rant.</title>
-   <link href="http://www.atlantageek.com/2008/01/04/zeds-rant/"/>
-   <updated>2008-01-04T02:52:13Z</updated>
-   <id>http://www.atlantageek.com/2008/01/04/zeds-rant</id>
+   <link href="http://www.atlantageek.com/2008/01/03/zeds-rant/"/>
+   <updated>2008-01-03T21:52:13-05:00</updated>
+   <id>http://www.atlantageek.com/2008/01/03/zeds-rant</id>
    <content type="html">&lt;p&gt;I just read Zed&#39;s rant. (Zed is the developer of Mongrel, a recent &amp;amp; popular web server written in Ruby)  Interesting stuff. Not just because he obviously has an Axe to grind but he does give a look at all the stuff going on behind the scenes with Ruby and Rails.&lt;/p&gt;
 
 &lt;p&gt;One item that caught my interest was the assertion that Japanese developers ignoring patch submissions from developers. Ruby does have some major performance issues. There is a reason there are at least 2 virtual machines (Rubinus and JRuby) being developed to compete with the current Ruby. And I do wonder if part of the problem is the (spoken) language barrier between the core team and a good chunk of the user market.&lt;/p&gt;
@@ -1343,7 +1369,7 @@ References available upon request&lt;/p&gt;
  <entry>
    <title>The Elements of online Journalism</title>
    <link href="http://www.atlantageek.com/2008/01/03/the-elements-of-online-journalism/"/>
-   <updated>2008-01-03T05:19:41Z</updated>
+   <updated>2008-01-03T00:19:41-05:00</updated>
    <id>http://www.atlantageek.com/2008/01/03/the-elements-of-online-journalism</id>
    <content type="html">&lt;p&gt;One of the fringe benefits of married life is having someone to get you those Christmas gifts you can&#39;t bring your self to buy. And for me those gifts are books. And the week between Christmas and New Year is the best time to read them.&lt;/p&gt;
 
