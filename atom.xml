@@ -4,12 +4,38 @@
  <title>Tommie Jones</title>
  <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
  <link href="http://www.atlantageek.com/"/>
- <updated>2014-08-23T23:18:46-04:00</updated>
+ <updated>2014-08-23T23:46:11-04:00</updated>
  <id>http://www.atlantageek.com</id>
  <author>
    <name>Tommie Jones</name>
  </author>
  
+ 
+ <entry>
+   <title>nodejs-as-a-windows-service</title>
+   <link href="http://www.atlantageek.com/2014/03/28/nodejs-as-a-windows-service/"/>
+   <updated>2014-03-28T00:00:00-04:00</updated>
+   <id>http://www.atlantageek.com/2014/03/28/nodejs-as-a-windows-service</id>
+   <content type="html">&lt;p&gt;To install node.js as a windows service you need three items.
+* NSSM http://nssm.cc/download
+* node.js for windows . http://nodejs.org/download
+* Your node.js application.&lt;/p&gt;
+
+&lt;p&gt;Unzip your node.js code in a directory.  Let&#39;s say its c:\helloworld\hi.js
+Install both nssm and node.js for windows.  Let&#39;s assume that node.js is in c:\Users\atlantageek\node.exe&lt;/p&gt;
+
+&lt;p&gt;Run &#39;nssm install&#39; from the directory you installed nssm. A window will pop up.  On my version it looks similar to the following.
+*The path will be the path to node.js
+* Startup directory will be the path where the js code and modules are located.
+* The options will be the actual js appliction file. For my example it will look like the following.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/posts/nssm.png&quot; alt=&quot;nssm service installer&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the very basic that you need.  You can also define Standard In and Standard Out redirection in the I/O tab.&lt;/p&gt;
+
+&lt;p&gt;Once the service is created. You can start and stop it from services manager thats built into windows.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Cheatsheet for Flot</title>

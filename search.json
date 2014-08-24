@@ -1,6 +1,19 @@
 [
   
     {
+  "title"    : "nodejs-as-a-windows-service",
+  "summary"  : "",
+  "category" : "",
+  "tags"     : ["node.js", null],
+  "url"      : "http://www.atlantageek.com/2014/03/28//",
+  "date"     : {
+    "day"   : "28",
+    "month" : "March",
+    "year"  : "2014"
+  }
+},
+  
+    {
   "title"    : "Cheatsheet for Flot",
   "summary"  : "",
   "category" : "",
