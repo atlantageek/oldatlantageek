@@ -119,19 +119,23 @@ END
 
 <p>snmptrap -v 1 -m +TRAP-TEST-MIB -c public localhost TRAP-TEST-MIB::demotraps localhost 6 17 '' SNMPv2-MIB::sysLocation.0 s "You were here"</p>
 
-<p>Breaking down the line is as follows.
-* 'snmptrap' - command to send a trap
-* '-v 1' - We are sending a SNMP version 1 trap
-* '-m +TRAP-TEST-MIB' Look in the config path and load the mib file 'TRAP-TEST-MIB'
-* '-c public' specifies that the community string is 'public'. A community string is like a password.
-* 'localhost' The server we are sending the trap too
-* 'TRAP-TEST-MIB::demotraps' - Which trap in TRAP-TEST-MIB that is being sent.
-* 'localhost' Where the trap is coming from
-* '6' Trap type. Can be a number from 1-6 (0-coldstart, 1-warmstart, 2-linkdown, 3-linkup, 4-authenticate failure, 5-egp neighborlost, 6-enterprise specific
-* 17 - Trap ID , you see it in the mib file above.</p>
+<p>Breaking down the line is as follows.</p>
+
+<ul>
+<li>'snmptrap' - command to send a trap</li>
+<li>'-v 1' - We are sending a SNMP version 1 trap</li>
+<li>'-m +TRAP-TEST-MIB' Look in the config path and load the mib file 'TRAP-TEST-MIB'</li>
+<li>'-c public' specifies that the community string is 'public'. A community string is like a password.</li>
+<li>'localhost' The server we are sending the trap too</li>
+<li>'TRAP-TEST-MIB::demotraps' - Which trap in TRAP-TEST-MIB that is being sent.</li>
+<li>'localhost' Where the trap is coming from</li>
+<li>'6' Trap type. Can be a number from 1-6 (0-coldstart, 1-warmstart, 2-linkdown, 3-linkup, 4-authenticate failure, 5-egp neighborlost, 6-enterprise specific</li>
+<li>17 - Trap ID , you see it in the mib file above.</li>
+</ul>
+
 
 <p>Complete.
-Next step is a server to see the trap.</p>
+<a href="/2014/08/23/snmp-trap-listener-in-node3">Next step is a server to see the trap. </a></p>
 
         </div>
     </div>

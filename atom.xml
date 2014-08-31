@@ -4,7 +4,7 @@
  <title>Tommie Jones</title>
  <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
  <link href="http://www.atlantageek.com/"/>
- <updated>2014-08-31T10:32:16-04:00</updated>
+ <updated>2014-08-31T10:41:02-04:00</updated>
  <id>http://www.atlantageek.com</id>
  <author>
    <name>Tommie Jones</name>
@@ -173,19 +173,23 @@ END
 
 &lt;p&gt;snmptrap -v 1 -m +TRAP-TEST-MIB -c public localhost TRAP-TEST-MIB::demotraps localhost 6 17 &#39;&#39; SNMPv2-MIB::sysLocation.0 s &quot;You were here&quot;&lt;/p&gt;
 
-&lt;p&gt;Breaking down the line is as follows.
-* &#39;snmptrap&#39; - command to send a trap
-* &#39;-v 1&#39; - We are sending a SNMP version 1 trap
-* &#39;-m +TRAP-TEST-MIB&#39; Look in the config path and load the mib file &#39;TRAP-TEST-MIB&#39;
-* &#39;-c public&#39; specifies that the community string is &#39;public&#39;. A community string is like a password.
-* &#39;localhost&#39; The server we are sending the trap too
-* &#39;TRAP-TEST-MIB::demotraps&#39; - Which trap in TRAP-TEST-MIB that is being sent.
-* &#39;localhost&#39; Where the trap is coming from
-* &#39;6&#39; Trap type. Can be a number from 1-6 (0-coldstart, 1-warmstart, 2-linkdown, 3-linkup, 4-authenticate failure, 5-egp neighborlost, 6-enterprise specific
-* 17 - Trap ID , you see it in the mib file above.&lt;/p&gt;
+&lt;p&gt;Breaking down the line is as follows.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&#39;snmptrap&#39; - command to send a trap&lt;/li&gt;
+&lt;li&gt;&#39;-v 1&#39; - We are sending a SNMP version 1 trap&lt;/li&gt;
+&lt;li&gt;&#39;-m +TRAP-TEST-MIB&#39; Look in the config path and load the mib file &#39;TRAP-TEST-MIB&#39;&lt;/li&gt;
+&lt;li&gt;&#39;-c public&#39; specifies that the community string is &#39;public&#39;. A community string is like a password.&lt;/li&gt;
+&lt;li&gt;&#39;localhost&#39; The server we are sending the trap too&lt;/li&gt;
+&lt;li&gt;&#39;TRAP-TEST-MIB::demotraps&#39; - Which trap in TRAP-TEST-MIB that is being sent.&lt;/li&gt;
+&lt;li&gt;&#39;localhost&#39; Where the trap is coming from&lt;/li&gt;
+&lt;li&gt;&#39;6&#39; Trap type. Can be a number from 1-6 (0-coldstart, 1-warmstart, 2-linkdown, 3-linkup, 4-authenticate failure, 5-egp neighborlost, 6-enterprise specific&lt;/li&gt;
+&lt;li&gt;17 - Trap ID , you see it in the mib file above.&lt;/li&gt;
+&lt;/ul&gt;
+
 
 &lt;p&gt;Complete.
-Next step is a server to see the trap.&lt;/p&gt;
+&lt;a href=&quot;/2014/08/23/snmp-trap-listener-in-node3&quot;&gt;Next step is a server to see the trap. &lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
  
