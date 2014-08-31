@@ -4,12 +4,335 @@
  <title>Tommie Jones</title>
  <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
  <link href="http://www.atlantageek.com/"/>
- <updated>2014-08-23T23:46:11-04:00</updated>
+ <updated>2014-08-31T10:20:15-04:00</updated>
  <id>http://www.atlantageek.com</id>
  <author>
    <name>Tommie Jones</name>
  </author>
  
+ 
+ <entry>
+   <title>snmp-trap-listener-in-node-part3</title>
+   <link href="http://www.atlantageek.com/2014/08/23/snmp-trap-listener-in-node3/"/>
+   <updated>2014-08-23T00:00:00-04:00</updated>
+   <id>http://www.atlantageek.com/2014/08/23/snmp-trap-listener-in-node3</id>
+   <content type="html">&lt;p&gt;This article assumes you&#39;ve read&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/2014/08/23/snmp-trap-listener-in-node&quot;&gt;Intro to node.js for snmp traps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/2014/08/23/snmp-trap-listener-in-node2&quot;&gt;Setting up Linux and building your own traps&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;Setup your direcotry where you plan to do development. To build this application you will need to do the follo
+wing assuming you have already installed node and npm on your system.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    npm install snmp
+    npm install http
+    npm install express
+    npm install util
+    npm install bunyan
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The minimum code you need to write to see the snmp traps is the following.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var os = require(&#39;os&#39;);
+var snmp = require(&#39;snmpjs&#39;);
+var http = require(&#39;http&#39;);
+var util = require(&#39;util&#39;);
+
+var trapd = snmp.createTrapListener();
+
+trapd.on(&#39;trap&#39;, function(msg){
+       result.push(msg);
+   var now = new Date();
+   console.log(&quot;Trap Received &quot; + now);
+   console.log(util.inspect(snmp.message.serializer(msg)[&#39;pdu&#39;], false, null));
+   console.log(result.length);
+   });
+    trapd.bind({family: &#39;udp4&#39;, port: 162});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&#39;ll see that trapd.on&lt;/p&gt;
+
+&lt;p&gt;Using the snmptrap command from the previous article&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; snmptrap -v 1 -m +TRAP-TEST-MIB -c public localhost TRAP-TEST-MIB::demotraps localhost 6 17 &#39;&#39; SNMPv2-MIB::sysLocation.0 s &quot;You were here&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The output from the node output will be&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Trap Received Sat Aug 30 2014 23:42:42 GMT-0400 (EDT)
+{ op: &#39;Trap(4)&#39;,
+  enterprise: &#39;1.3.6.1.4.1.2021.13.990&#39;,
+  agent_addr: &#39;127.0.0.1&#39;,
+  generic_trap: 6,  
+  specific_trap: 17,
+  time_stamp: 18277502,
+  varbinds: 
+   [ { oid: &#39;1.3.6.1.2.1.1.6.0&#39;,
+   typename: &#39;OctetString&#39;,
+   value: &amp;lt;Buffer 59 6f 75 20 77 65 72 65 20 68 65 72 65&amp;gt;,
+   string_value: &#39;You were here&#39; } ] }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The strength of using node.js comes in when you want to integrate a web server with this functionality. In other programming languages to integrate a web server with a snmptrap server you would need to create multiple threads or to use the unix select command to listen on multiple file handles.  Both methods are kludgy. With node.js you just configure both a trap listener and a web server with a callback method and it just works. Here is a simple web server using the express network.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var os = require(&#39;os&#39;);
+var snmp = require(&#39;snmpjs&#39;);
+var http = require(&#39;http&#39;);
+var express = require(&#39;express&#39;);
+var util = require(&#39;util&#39;);
+
+var app = express();
+
+var result=[];
+
+app.use(express.static(&#39;public&#39;));
+app.get(&#39;/get_today_count&#39;, function(req, res) {
+   console.log(result.length);
+  res.send(result.length.toString());
+});
+
+var server = app.listen(3001, function() {
+  console.log(&#39;Listening on port %d&#39;, server.address().port);
+});
+
+
+var trapd = snmp.createTrapListener();
+
+trapd.on(&#39;trap&#39;, function(msg){
+   result.push(msg);
+   var now = new Date();
+   console.log(&quot;Trap Received &quot; + now);
+   console.log(util.inspect(snmp.message.serializer(msg)[&#39;pdu&#39;], false, null));
+   console.log(result.length);
+});
+
+trapd.bind({family: &#39;udp4&#39;, port: 162});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This code uses the express modlue. So any calls to static files will go to a public directory.  The initial index.html file will run javascript that every few seconds makes an ajax cll to /get_today_count.  To get this server along with the public/index.html pull the code from &lt;a href=&quot;https://github.com/atlantageek/node-and-snmp/tree/master/code&quot;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The screen will look like this:
+&lt;img src=&quot;https://raw.githubusercontent.com/atlantageek/node-and-snmp/master/images/snmp_count.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Part 4 is coming&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>snmp-trap-listener-in-node-part2</title>
+   <link href="http://www.atlantageek.com/2014/08/23/snmp-trap-listener-in-node2/"/>
+   <updated>2014-08-23T00:00:00-04:00</updated>
+   <id>http://www.atlantageek.com/2014/08/23/snmp-trap-listener-in-node2</id>
+   <content type="html">&lt;h1&gt;Get your system to build traps&lt;/h1&gt;
+
+&lt;p&gt;This article assumes you&#39;ve read &lt;a href=&quot;/2014/08/23/snmp-trap-listener-in-node&quot;&gt;the first article&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Im going to assume a linux environment here.&lt;/p&gt;
+
+&lt;p&gt;The first step is to start generating traps in your test environment. I&#39;m borrowing a lot of this on &lt;a href=&quot;http://technotes.twosmallcoins.com/?p=369&quot;&gt;How to create a test trap&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;First we need to install net-snmp-utils.  This will give us a few command line tools and make sure the corresponding libraries are available. Now you should be able to type in snmptrap command and get a usage listing.&lt;/p&gt;
+
+&lt;h2&gt;STEP 1&lt;/h2&gt;
+
+&lt;p&gt;To install you do:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo yum install net-snmp-utils net-snmp-devel
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;STEP 2&lt;/h2&gt;
+
+&lt;p&gt;I&#39;m not sure what test traps you have installed on the server so the next step is to create a test trap. To create a test trap is to we need to generate a mib file.  On Fedora systems you will find these in the /usr/share/snmp/mibs directory.&lt;/p&gt;
+
+&lt;p&gt;If you want to confirm the directory run net-snmp-config --snmpconfpath to see the path of where mib files are searched for.&lt;/p&gt;
+
+&lt;p&gt;Use your favorite editor and create a test trap as follows:&lt;/p&gt;
+
+&lt;p&gt;TRAP-TEST-MIB.txt&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;TRAP-TEST-MIB DEFINITIONS ::= BEGIN
+IMPORTS ucdExperimental FROM UCD-SNMP-MIB;
+
+demotraps OBJECT IDENTIFIER ::= { ucdExperimental 990 }
+
+demo-trap TRAP-TYPE
+STATUS current
+ENTERPRISE demotraps
+VARIABLES { sysLocation }
+DESCRIPTION &quot;This is just a demo&quot;
+::= 17
+END
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;STEP 3&lt;/h2&gt;
+
+&lt;p&gt;To send this trap we do the following&lt;/p&gt;
+
+&lt;p&gt;snmptrap -v 1 -m +TRAP-TEST-MIB -c public localhost TRAP-TEST-MIB::demotraps localhost 6 17 &#39;&#39; SNMPv2-MIB::sysLocation.0 s &quot;You were here&quot;&lt;/p&gt;
+
+&lt;p&gt;Breaking down the line is as follows.
+* &#39;snmptrap&#39; - command to send a trap
+* &#39;-v 1&#39; - We are sending a SNMP version 1 trap
+* &#39;-m +TRAP-TEST-MIB&#39; Look in the config path and load the mib file &#39;TRAP-TEST-MIB&#39;
+* &#39;-c public&#39; specifies that the community string is &#39;public&#39;. A community string is like a password.
+* &#39;localhost&#39; The server we are sending the trap too
+* &#39;TRAP-TEST-MIB::demotraps&#39; - Which trap in TRAP-TEST-MIB that is being sent.
+* &#39;localhost&#39; Where the trap is coming from
+* &#39;6&#39; Trap type. Can be a number from 1-6 (0-coldstart, 1-warmstart, 2-linkdown, 3-linkup, 4-authenticate failure, 5-egp neighborlost, 6-enterprise specific
+* 17 - Trap ID , you see it in the mib file above.&lt;/p&gt;
+
+&lt;p&gt;Complete.
+Next step is a server to see the trap.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>snmp-trap-listener-in-node</title>
+   <link href="http://www.atlantageek.com/2014/08/23/snmp-trap-listener-in-node/"/>
+   <updated>2014-08-23T00:00:00-04:00</updated>
+   <id>http://www.atlantageek.com/2014/08/23/snmp-trap-listener-in-node</id>
+   <content type="html">&lt;h1&gt;Developing a Trap Listener in Node.js&lt;/h1&gt;
+
+&lt;p&gt;A challenge in developing network monitoring applications is the need to listen to multiple inputs. A modern trap listener with a web interface must service both traps coming from the network as well as web requests coming from users or other service. There were acouple of ways to handle this but they always came with tradeoffs.&lt;/p&gt;
+
+&lt;h2&gt;Threads&lt;/h2&gt;
+
+&lt;p&gt;Threads are one solution. One thread could listen on the snmp trap port and another listenr could monitor on the http port. However since these threads were often seperate processes it was difficult to share data between them.&lt;/p&gt;
+
+&lt;h2&gt;IO.Select&lt;/h2&gt;
+
+&lt;p&gt;Another option was using IO.Select (or just select in c) The problem with IO select is that its clunky. Look at the following segment.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;r, w = IO.select(http_stream, snmp_stream)
+r.each do |stream|
+  stream.handle_read
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&#39;ll see in the example we have a list of streams to listen to and this is a blocking call.  You cant do much of anything else since select is a blocking call.&lt;/p&gt;
+
+&lt;h2&gt;Event Programming with Node.js&lt;/h2&gt;
+
+&lt;p&gt;However node.js greatly simplifies this. For node.js you configure a listener and attach a callback to handle the event. The developer does not need to loop around a polling method or use a blocking method.  He just tells the program to listen for events and instead of waiting for the event he gives a function to call when that event occurs.&lt;/p&gt;
+
+&lt;p&gt;An example of this is below.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var os = require(&#39;os&#39;);
+var snmp = require(&#39;snmpjs&#39;);
+var http = require(&#39;http&#39;);
+var express = require(&#39;express&#39;);
+var app = express();
+
+var result=[];
+
+//Setup http server code
+app.use(express.static(&#39;public&#39;));
+app.get(&#39;/get_today_count&#39;, function(req, res) {
+    console.log(result.length);
+    res.send(result.length.toString());
+});
+
+var httpd = app.listen(3001, function() {
+    console.log(&#39;Listening on port %d&#39;, server.address().port);
+});
+
+
+var trapd = snmp.createTrapListener();
+
+trapd.on(&#39;trap&#39;, function(msg){
+    result.push(msg);
+    var now = new Date();
+    console.log(&quot;Trap Received &quot; + now);
+    console.log(result.length);
+});
+
+trapd.bind({family: &#39;udp4&#39;, port: 162});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this code you can see that thw listeners have been configured.  A snmp trap listener and a httpd listener. Each listener has an inline function defined that will run whenever new data is available for this process.  In the following series of posts I will cover: Generating traps, building a trap listener.js, and using Dashboard-js to build a always on dashboard to monitor traps.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.google.com&quot;&gt;Setting up Linux and building your own traps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.google.com&quot;&gt;Building a Node.js Listener&lt;/a&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.google.com&quot;&gt;Building a Dashboard for your traps&lt;/a&gt;Developing a Trap Listener in Node.js&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;hr /&gt;
+
+&lt;p&gt;A challenge in developing network monitoring applications is the need to listen to multiple inputs. A modern trap listener with a web interface must service both traps coming from the network as well as web requests coming from users or other service. There were acouple of ways to handle this but they always came with tradeoffs.&lt;/p&gt;
+
+&lt;h2&gt;Threads&lt;/h2&gt;
+
+&lt;p&gt;Threads are one solution. One thread could listen on the snmp trap port and another listenr could monitor on the http port. However since these threads were often seperate processes it was difficult to share data between them.&lt;/p&gt;
+
+&lt;h2&gt;IO.Select&lt;/h2&gt;
+
+&lt;p&gt;Another option was using IO.Select (or just select in c) The problem with IO select is that its clunky. Look at the following segment.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;r, w = IO.select(http_stream, snmp_stream)
+r.each do |stream|
+  stream.handle_read
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&#39;ll see in the example we have a list of streams to listen to and this is a blocking call.  You cant do much of anything else since select is a blocking call.&lt;/p&gt;
+
+&lt;h2&gt;Event Programming with Node.js&lt;/h2&gt;
+
+&lt;p&gt;However node.js greatly simplifies this. For node.js you configure a listener and attach a callback to handle the event. The developer does not need to loop around a polling method or use a blocking method.  He just tells the program to listen for events and instead of waiting for the event he gives a function to call when that event occurs.&lt;/p&gt;
+
+&lt;p&gt;An example of this is below.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var os = require(&#39;os&#39;);
+var snmp = require(&#39;snmpjs&#39;);
+var http = require(&#39;http&#39;);
+var express = require(&#39;express&#39;);
+var app = express();
+
+var result=[];
+
+//Setup http server code
+app.use(express.static(&#39;public&#39;));
+app.get(&#39;/get_today_count&#39;, function(req, res) {
+    console.log(result.length);
+    res.send(result.length.toString());
+});
+
+var httpd = app.listen(3001, function() {
+    console.log(&#39;Listening on port %d&#39;, server.address().port);
+});
+
+
+var trapd = snmp.createTrapListener();
+
+trapd.on(&#39;trap&#39;, function(msg){
+    result.push(msg);
+    var now = new Date();
+    console.log(&quot;Trap Received &quot; + now);
+    console.log(result.length);
+});
+
+trapd.bind({family: &#39;udp4&#39;, port: 162});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this code you can see that thw listeners have been configured.  A snmp trap listener and a httpd listener. Each listener has an inline function defined that will run whenever new data is available for this process.  In the following series of posts I will cover: Generating traps, building a trap listener.js, and using Dashboard-js to build a always on dashboard to monitor traps.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/2014/08/23/snmp-trap-listener-in-node2&quot;&gt;Setting up Linux and building your own traps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/2014/08/23/snmp-trap-listener-in-node3&quot;&gt;Building a Node.js Listener&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Building a Dashboard for your traps - coming soon.&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>nodejs-as-a-windows-service</title>

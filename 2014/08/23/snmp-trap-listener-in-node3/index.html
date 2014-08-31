@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-    <title>Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</title>
+    <title>snmp-trap-listener-in-node-part3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Technical Web Development Blog">
     <meta name="author" content="Garry Welding">
@@ -66,25 +66,126 @@ title="Yield Curve" target="_blank" target="new">Interactive Yield Curve in java
                     <div class="content">    
     <div class="row">	
         <div class="span7 column">
-            <h1>Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</h1>
+            <h1>snmp-trap-listener-in-node-part3</h1>
         </div>
     </div>
     
     <div class="row">	
         <div class="span7 columns">
-            <p><a href="http://www.adobe.com/devnet/flex/articles/fig_pt3_02.html">Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</a></p>
+            <p>This article assumes you've read</p>
+
+<ul>
+<li><a href="/2014/08/23/snmp-trap-listener-in-node">Intro to node.js for snmp traps</a></li>
+<li><a href="/2014/08/23/snmp-trap-listener-in-node2">Setting up Linux and building your own traps</a></li>
+</ul>
+
+
+<p>Setup your direcotry where you plan to do development. To build this application you will need to do the follo
+wing assuming you have already installed node and npm on your system.</p>
+
+<pre><code>    npm install snmp
+    npm install http
+    npm install express
+    npm install util
+    npm install bunyan
+</code></pre>
+
+<p>The minimum code you need to write to see the snmp traps is the following.</p>
+
+<pre><code>var os = require('os');
+var snmp = require('snmpjs');
+var http = require('http');
+var util = require('util');
+
+var trapd = snmp.createTrapListener();
+
+trapd.on('trap', function(msg){
+       result.push(msg);
+   var now = new Date();
+   console.log("Trap Received " + now);
+   console.log(util.inspect(snmp.message.serializer(msg)['pdu'], false, null));
+   console.log(result.length);
+   });
+    trapd.bind({family: 'udp4', port: 162});
+</code></pre>
+
+<p>You'll see that trapd.on</p>
+
+<p>Using the snmptrap command from the previous article</p>
+
+<pre><code> snmptrap -v 1 -m +TRAP-TEST-MIB -c public localhost TRAP-TEST-MIB::demotraps localhost 6 17 '' SNMPv2-MIB::sysLocation.0 s "You were here"
+</code></pre>
+
+<p>The output from the node output will be</p>
+
+<pre><code>Trap Received Sat Aug 30 2014 23:42:42 GMT-0400 (EDT)
+{ op: 'Trap(4)',
+  enterprise: '1.3.6.1.4.1.2021.13.990',
+  agent_addr: '127.0.0.1',
+  generic_trap: 6,  
+  specific_trap: 17,
+  time_stamp: 18277502,
+  varbinds: 
+   [ { oid: '1.3.6.1.2.1.1.6.0',
+   typename: 'OctetString',
+   value: &lt;Buffer 59 6f 75 20 77 65 72 65 20 68 65 72 65&gt;,
+   string_value: 'You were here' } ] }
+</code></pre>
+
+<p>The strength of using node.js comes in when you want to integrate a web server with this functionality. In other programming languages to integrate a web server with a snmptrap server you would need to create multiple threads or to use the unix select command to listen on multiple file handles.  Both methods are kludgy. With node.js you just configure both a trap listener and a web server with a callback method and it just works. Here is a simple web server using the express network.</p>
+
+<pre><code>var os = require('os');
+var snmp = require('snmpjs');
+var http = require('http');
+var express = require('express');
+var util = require('util');
+
+var app = express();
+
+var result=[];
+
+app.use(express.static('public'));
+app.get('/get_today_count', function(req, res) {
+   console.log(result.length);
+  res.send(result.length.toString());
+});
+
+var server = app.listen(3001, function() {
+  console.log('Listening on port %d', server.address().port);
+});
+
+
+var trapd = snmp.createTrapListener();
+
+trapd.on('trap', function(msg){
+   result.push(msg);
+   var now = new Date();
+   console.log("Trap Received " + now);
+   console.log(util.inspect(snmp.message.serializer(msg)['pdu'], false, null));
+   console.log(result.length);
+});
+
+trapd.bind({family: 'udp4', port: 162});
+</code></pre>
+
+<p>This code uses the express modlue. So any calls to static files will go to a public directory.  The initial index.html file will run javascript that every few seconds makes an ajax cll to /get_today_count.  To get this server along with the public/index.html pull the code from <a href="https://github.com/atlantageek/node-and-snmp/tree/master/code">github</a>.</p>
+
+<p>The screen will look like this:
+<img src="https://raw.githubusercontent.com/atlantageek/node-and-snmp/master/images/snmp_count.png" alt="screenshot" /></p>
+
+<p>Part 4 is coming</p>
 
         </div>
     </div>
     
     <div class="pager hidden-phone hidden-tablet">
-        <a class="prev" href="/2008/01/16/sun-buys-mysql/" title="Previous Post: Sun Buys Mysql"><i class="icon-arrow-left icon-white"></i></a>
-        <a class="next" href="/2008/01/30/areaware-mango-wooden-radio/" title="Previous Post: Areaware Mango Wooden Radio"><i class="icon-arrow-right icon-white"></i></a>
+        <a class="prev" href="/2014/08/23/snmp-trap-listener-in-node2/" title="Previous Post: snmp-trap-listener-in-node-part2"><i class="icon-arrow-left icon-white"></i></a>
+        <a class="next" href="" title="Previous Post: "><i class="icon-arrow-right icon-white"></i></a>
     </div>
     
     <div class="row">	
         <div class="span7 column">
-              <i class="icon-calendar"></i> January 30, 2008| <i class="icon-tags"></i> Tags :
+              <i class="icon-calendar"></i> August 23, 2014| <i class="icon-tags"></i> Tags : <a href="/tags/node.js" rel="tooltip" title="View pages tagged with &quot;node.js&quot;"><span class="label label-info">node.js</span></a>   
               <a href="https://twitter.com/share" class="twitter-share-button" data-via="atlantageek">Tweet</a> <g:plusone size="medium"></g:plusone></h5>
         </div>
     </div>X
@@ -157,7 +258,7 @@ title="Yield Curve" target="_blank" target="new">Interactive Yield Curve in java
 
     <footer class="footer">
   <div class="container">
-	<p class="pull-right"> <a href="/2008/01/16/sun-buys-mysql/" title="Previous Post: Sun Buys Mysql">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   	<a href="/2008/01/30/areaware-mango-wooden-radio/" title="Next Post: Areaware Mango Wooden Radio">Next Blog Post &raquo; </a> 	 </p>        
+	<p class="pull-right"> <a href="/2014/08/23/snmp-trap-listener-in-node2/" title="Previous Post: snmp-trap-listener-in-node-part2">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   </p>        
 	<p>Page last generated on August 31, 2014</p>
 	<p>If need be, <a href="https://github.com/atlantageek/Feedback/issues/new" title="Leave feedback for Tommie Jones"  target="_blank" >leave me some feedback</a>.</p>	
 	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>	

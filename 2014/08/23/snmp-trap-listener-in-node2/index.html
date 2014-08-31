@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-    <title>Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</title>
+    <title>snmp-trap-listener-in-node-part2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Technical Web Development Blog">
     <meta name="author" content="Garry Welding">
@@ -66,25 +66,84 @@ title="Yield Curve" target="_blank" target="new">Interactive Yield Curve in java
                     <div class="content">    
     <div class="row">	
         <div class="span7 column">
-            <h1>Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</h1>
+            <h1>snmp-trap-listener-in-node-part2</h1>
         </div>
     </div>
     
     <div class="row">	
         <div class="span7 columns">
-            <p><a href="http://www.adobe.com/devnet/flex/articles/fig_pt3_02.html">Adobe - Developer Center : Designing for Flex &ndash; Part 3: Structuring your application</a></p>
+            <h1>Get your system to build traps</h1>
+
+<p>This article assumes you've read <a href="/2014/08/23/snmp-trap-listener-in-node">the first article</a></p>
+
+<p>Im going to assume a linux environment here.</p>
+
+<p>The first step is to start generating traps in your test environment. I'm borrowing a lot of this on <a href="http://technotes.twosmallcoins.com/?p=369">How to create a test trap</a></p>
+
+<p>First we need to install net-snmp-utils.  This will give us a few command line tools and make sure the corresponding libraries are available. Now you should be able to type in snmptrap command and get a usage listing.</p>
+
+<h2>STEP 1</h2>
+
+<p>To install you do:</p>
+
+<pre><code>$ sudo yum install net-snmp-utils net-snmp-devel
+</code></pre>
+
+<h2>STEP 2</h2>
+
+<p>I'm not sure what test traps you have installed on the server so the next step is to create a test trap. To create a test trap is to we need to generate a mib file.  On Fedora systems you will find these in the /usr/share/snmp/mibs directory.</p>
+
+<p>If you want to confirm the directory run net-snmp-config --snmpconfpath to see the path of where mib files are searched for.</p>
+
+<p>Use your favorite editor and create a test trap as follows:</p>
+
+<p>TRAP-TEST-MIB.txt</p>
+
+<pre><code>TRAP-TEST-MIB DEFINITIONS ::= BEGIN
+IMPORTS ucdExperimental FROM UCD-SNMP-MIB;
+
+demotraps OBJECT IDENTIFIER ::= { ucdExperimental 990 }
+
+demo-trap TRAP-TYPE
+STATUS current
+ENTERPRISE demotraps
+VARIABLES { sysLocation }
+DESCRIPTION "This is just a demo"
+::= 17
+END
+</code></pre>
+
+<h2>STEP 3</h2>
+
+<p>To send this trap we do the following</p>
+
+<p>snmptrap -v 1 -m +TRAP-TEST-MIB -c public localhost TRAP-TEST-MIB::demotraps localhost 6 17 '' SNMPv2-MIB::sysLocation.0 s "You were here"</p>
+
+<p>Breaking down the line is as follows.
+* 'snmptrap' - command to send a trap
+* '-v 1' - We are sending a SNMP version 1 trap
+* '-m +TRAP-TEST-MIB' Look in the config path and load the mib file 'TRAP-TEST-MIB'
+* '-c public' specifies that the community string is 'public'. A community string is like a password.
+* 'localhost' The server we are sending the trap too
+* 'TRAP-TEST-MIB::demotraps' - Which trap in TRAP-TEST-MIB that is being sent.
+* 'localhost' Where the trap is coming from
+* '6' Trap type. Can be a number from 1-6 (0-coldstart, 1-warmstart, 2-linkdown, 3-linkup, 4-authenticate failure, 5-egp neighborlost, 6-enterprise specific
+* 17 - Trap ID , you see it in the mib file above.</p>
+
+<p>Complete.
+Next step is a server to see the trap.</p>
 
         </div>
     </div>
     
     <div class="pager hidden-phone hidden-tablet">
-        <a class="prev" href="/2008/01/16/sun-buys-mysql/" title="Previous Post: Sun Buys Mysql"><i class="icon-arrow-left icon-white"></i></a>
-        <a class="next" href="/2008/01/30/areaware-mango-wooden-radio/" title="Previous Post: Areaware Mango Wooden Radio"><i class="icon-arrow-right icon-white"></i></a>
+        <a class="prev" href="/2014/08/23/snmp-trap-listener-in-node/" title="Previous Post: snmp-trap-listener-in-node"><i class="icon-arrow-left icon-white"></i></a>
+        <a class="next" href="/2014/08/23/snmp-trap-listener-in-node3/" title="Previous Post: snmp-trap-listener-in-node-part3"><i class="icon-arrow-right icon-white"></i></a>
     </div>
     
     <div class="row">	
         <div class="span7 column">
-              <i class="icon-calendar"></i> January 30, 2008| <i class="icon-tags"></i> Tags :
+              <i class="icon-calendar"></i> August 23, 2014| <i class="icon-tags"></i> Tags : <a href="/tags/node.js" rel="tooltip" title="View pages tagged with &quot;node.js&quot;"><span class="label label-info">node.js</span></a>   
               <a href="https://twitter.com/share" class="twitter-share-button" data-via="atlantageek">Tweet</a> <g:plusone size="medium"></g:plusone></h5>
         </div>
     </div>X
@@ -157,7 +216,7 @@ title="Yield Curve" target="_blank" target="new">Interactive Yield Curve in java
 
     <footer class="footer">
   <div class="container">
-	<p class="pull-right"> <a href="/2008/01/16/sun-buys-mysql/" title="Previous Post: Sun Buys Mysql">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   	<a href="/2008/01/30/areaware-mango-wooden-radio/" title="Next Post: Areaware Mango Wooden Radio">Next Blog Post &raquo; </a> 	 </p>        
+	<p class="pull-right"> <a href="/2014/08/23/snmp-trap-listener-in-node/" title="Previous Post: snmp-trap-listener-in-node">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   	<a href="/2014/08/23/snmp-trap-listener-in-node3/" title="Next Post: snmp-trap-listener-in-node-part3">Next Blog Post &raquo; </a> 	 </p>        
 	<p>Page last generated on August 31, 2014</p>
 	<p>If need be, <a href="https://github.com/atlantageek/Feedback/issues/new" title="Leave feedback for Tommie Jones"  target="_blank" >leave me some feedback</a>.</p>	
 	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>	
