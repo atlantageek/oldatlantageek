@@ -4,7 +4,7 @@
  <title>Tommie Jones</title>
  <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
  <link href="http://www.atlantageek.com/"/>
- <updated>2014-08-31T10:20:15-04:00</updated>
+ <updated>2014-08-31T10:32:16-04:00</updated>
  <id>http://www.atlantageek.com</id>
  <author>
    <name>Tommie Jones</name>
@@ -195,77 +195,6 @@ Next step is a server to see the trap.&lt;/p&gt;
    <updated>2014-08-23T00:00:00-04:00</updated>
    <id>http://www.atlantageek.com/2014/08/23/snmp-trap-listener-in-node</id>
    <content type="html">&lt;h1&gt;Developing a Trap Listener in Node.js&lt;/h1&gt;
-
-&lt;p&gt;A challenge in developing network monitoring applications is the need to listen to multiple inputs. A modern trap listener with a web interface must service both traps coming from the network as well as web requests coming from users or other service. There were acouple of ways to handle this but they always came with tradeoffs.&lt;/p&gt;
-
-&lt;h2&gt;Threads&lt;/h2&gt;
-
-&lt;p&gt;Threads are one solution. One thread could listen on the snmp trap port and another listenr could monitor on the http port. However since these threads were often seperate processes it was difficult to share data between them.&lt;/p&gt;
-
-&lt;h2&gt;IO.Select&lt;/h2&gt;
-
-&lt;p&gt;Another option was using IO.Select (or just select in c) The problem with IO select is that its clunky. Look at the following segment.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;r, w = IO.select(http_stream, snmp_stream)
-r.each do |stream|
-  stream.handle_read
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You&#39;ll see in the example we have a list of streams to listen to and this is a blocking call.  You cant do much of anything else since select is a blocking call.&lt;/p&gt;
-
-&lt;h2&gt;Event Programming with Node.js&lt;/h2&gt;
-
-&lt;p&gt;However node.js greatly simplifies this. For node.js you configure a listener and attach a callback to handle the event. The developer does not need to loop around a polling method or use a blocking method.  He just tells the program to listen for events and instead of waiting for the event he gives a function to call when that event occurs.&lt;/p&gt;
-
-&lt;p&gt;An example of this is below.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;var os = require(&#39;os&#39;);
-var snmp = require(&#39;snmpjs&#39;);
-var http = require(&#39;http&#39;);
-var express = require(&#39;express&#39;);
-var app = express();
-
-var result=[];
-
-//Setup http server code
-app.use(express.static(&#39;public&#39;));
-app.get(&#39;/get_today_count&#39;, function(req, res) {
-    console.log(result.length);
-    res.send(result.length.toString());
-});
-
-var httpd = app.listen(3001, function() {
-    console.log(&#39;Listening on port %d&#39;, server.address().port);
-});
-
-
-var trapd = snmp.createTrapListener();
-
-trapd.on(&#39;trap&#39;, function(msg){
-    result.push(msg);
-    var now = new Date();
-    console.log(&quot;Trap Received &quot; + now);
-    console.log(result.length);
-});
-
-trapd.bind({family: &#39;udp4&#39;, port: 162});
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;In this code you can see that thw listeners have been configured.  A snmp trap listener and a httpd listener. Each listener has an inline function defined that will run whenever new data is available for this process.  In the following series of posts I will cover: Generating traps, building a trap listener.js, and using Dashboard-js to build a always on dashboard to monitor traps.&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.google.com&quot;&gt;Setting up Linux and building your own traps&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.google.com&quot;&gt;Building a Node.js Listener&lt;/a&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;http://www.google.com&quot;&gt;Building a Dashboard for your traps&lt;/a&gt;Developing a Trap Listener in Node.js&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-
-
-&lt;hr /&gt;
 
 &lt;p&gt;A challenge in developing network monitoring applications is the need to listen to multiple inputs. A modern trap listener with a web interface must service both traps coming from the network as well as web requests coming from users or other service. There were acouple of ways to handle this but they always came with tradeoffs.&lt;/p&gt;
 
