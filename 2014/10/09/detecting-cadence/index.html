@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="fuelux" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <title>Detecting the cadence of your client's data.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Technical Web Development Blog">
+    <meta name="author" content="Garry Welding">
+    <script src="/js/all.js" type="text/javascript"></script>
+	<link href="/css/all.css" rel="stylesheet">	
+	
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+  </head>
+  <body data-spy="scroll" data-target=".subnav" data-offset="50">
+    <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="http://www.atlantageek.com">Atlantageek</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="">
+                        <a href="http://www.atlantageek.com"><i class="icon-home"></i> Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-list"></i> Projects <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class=""><a href="/projects/yield-curver" 
+title="Yield Curve" target="_blank" target="new">Interactive Yield Curve in javascript</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/-lcdproc-client-node" title="lcdproc-client for node.js" target="_blank">LCDproc client for node.js.</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/websocketsa" title="take me to the WebSocket SpectrumAnalyzer pageithub page" target="_blank">WiSpy node.js UI</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/mysql-array-functions" title="Mysql Array functions" target="_blank">Mysql Array user defined functions.</a></li>
+                            <li class=""><a href="http://atlantageek.com/joust" title="Joust Game">Joust Game</a></li>
+                        </ul>
+                    </li>
+                    <li id="search" class="search hidden-phone hidden-tablet">
+                        <span class="icon search"></span>
+                        <input type="text" placeholder="search">
+                        <i id="close" class="icon-remove"></i>
+                        <ol id="search-results" class="dropdown-menu">
+                        </ol>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container">
+        <div class="content">
+            <div class="row">
+                <div class="span7 columns">
+                    <div class="content">    
+    <div class="row">	
+        <div class="span7 column">
+            <h1>Detecting the cadence of your client's data.</h1>
+        </div>
+    </div>
+    
+    <div class="row">	
+        <div class="span7 columns">
+            Often a SaaS company is dependent on the periodic data from its clients. Its challenging enough just to get your clients set up and sending data. However in the interest of client service and to predict that there is trouble you often want to detect when data delivery has being interrupted. This could either be something that broke but not identified yet or the client is planning on firing you and you may want to go on the offensive to win them back. Detecting interruptions is not that difficult except in the SaaS world you’re often playing a numbers game.  You have hundreds or thousands of clients. These clients could each have their own Cadence of data delivery (daily, weekly, monthly, every other tuesday.) So its difficult to identify when a client is late. 
+<p>
+I’ve seen a similar problem at work and we tried multiple solutions but only one allowed us to not have to scan hundreds of table rows and graphs to identify interruptions in data delivery. The most recent solution has had some success by calculating a score based on the predicted cadence and the amount of time its been since the last data delivery. 
+<p>
+Previous solutions attempted to show a graph so the user could see at a glance if a data delivery was late.  But this was error prone. Other attempts were made to classify clients as daily/weekly/monthly because these were the terms we used. . Thinking that tracking daily uploads would look something like this.
+<p>
+Daily: <span class="bar"> 1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1 </span>
+<p>
+Weekly: <span class="bar"> 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0</span>
+<p>
+Monthly:<span class="bar"> 1,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0</span>
+<p>
+
+But the data was never this clean. Days would be <br>skipped
+<span class="bar"> 1,1,1,0,1,0,0,1,1,0,1,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,1,1,0,0,0,0,1,1,1,0,0,1,1,0,0,1,0,0,1,0,1,1,1 </span>
+or delayed <span class="bar"> 1,1,1,1,0,1,0,1,1,1,0,0,1,1,1,1,1,1,1,0,0,1,1,1,1,0,1,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,0,1,0,1,1,1,1,0,0,1,1,1,1,0,0 </span>
+or both <span class="bar"> 1,1,0,1,0,1,0,1,0,1,0,0,1,1,1,0,1,1,1,0,0,1,0,1,1,0,1,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,0,1,1,0,1,0,1,0,0,0,0,0,1,1,1,1,0,0 </span>
+<p>
+And few of our clients were sending data this often. Most sent data weekly, but not necessarily on the same day of the week.
+ <span class="bar"> 1,0,0,0,0,0,0, 0,0,1,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,1, 1,0,0,1,0,0,0, 0,0,1,0,0,0,0, 0,0,0,1,0,0,0, 0,1,0,0,0,0,0</span>
+<p>
+Eventually we realized that each client had its own cadency and its own level of consistency. We needed a way to identify a client's cadence and consistency. Then use those number to determine if the current gap is normal or an anomoly. <p> 
+We had data. We knew on what days the client sent us the data. We could identify the average and standard deviation of how long a client would go without sending us data. <br>
+
+So with this method I can calculate the number of standard deviations the gap for that paticular day. This chart is looking back over time with the  most recent data points being to the most right.
+<span class="composite"> 1,0,0,0,0,0,0, 0,0,1,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,1, 1,0,0,1,0,0,0, 0,0,1,0,0,0,0, 0,0,0,1,0,0,0, 0,1,0,0,0,0,0</span> Whenever the blue line crossed went above 1.0 then that means the current gap was larger than 85% of the previous gaps.  In our usage we contact the client when the standard deviation hits 2. This means the gap is 97% larger. Sorting the list of clients by this table gives us an idea of which clients need to be contacted.<p>
+
+After using the report for 3 months it has been reasonably successful. Our client service represenatves are rarely blindsided by calls from clients asking why isnt new data appearing in their accounts. In actuality since we often cal the client we're finding that roughly 50% of the time the client knows their data transfer is down and the other 50% of the time they did not realize that they had stopped sending us data. <p>
+
+Of course this only adds one dimension. There are requests to add data volume to the score. And customer's whose cadence stretches across a period of a year are difficult to predict. We also have to be careful with new clients who we don't have any historical data with. However this report provides the confidence in that our existing client base is covered so we can spend more time getting our new clients brought into our system.
+
+    <script type="text/javascript">
+    $(function() {
+
+        /* Use 'html' instead of an array of values to pass options 
+        to a sparkline with data in the tag */
+        $('.bar').sparkline('html', {type: 'bar'} );
+        $('.composite').sparkline('html', {type: 'tristate'} );
+        $('.composite').sparkline([-1,-0.85,-0.7,-0.55,-0.4,-0.25,-0.1, 0,0.15,0.3,-1.0,-0.85,-0.7,-0.55, -1.0,-0.85,-0.7,-0.55,-0.4,-0.25,-0.1, 0,0.15,0.3,0.45,0.6,0.75,-1.0, -1.0,-0.85,-0.7,-1,-0.85,-0.7,-0.55, -0.4,-0.25,-1.0,-0.85,-0.7,-0.55,-0.40, -0.25,-0.1,0,-1.0,-0.85,-0.7,-0.55, -0.4,-1.0,-0.85,-0.70,-0.55,-0.4,-0.25], {type: 'line', composite: true, fillColor: null } );
+    });
+    </script>
+
+
+        </div>
+    </div>
+    
+    <div class="pager hidden-phone hidden-tablet">
+        <a class="prev" href="/2014/08/23/snmp-trap-listener-in-node3/" title="Previous Post: snmp-trap-listener-in-node-part3"><i class="icon-arrow-left icon-white"></i></a>
+        <a class="next" href="" title="Previous Post: "><i class="icon-arrow-right icon-white"></i></a>
+    </div>
+    
+    <div class="row">	
+        <div class="span7 column">
+              <i class="icon-calendar"></i> October  9, 2014| <i class="icon-tags"></i> Tags : <a href="/tags/node.js" rel="tooltip" title="View pages tagged with &quot;node.js&quot;"><span class="label label-info">node.js</span></a>   
+              <a href="https://twitter.com/share" class="twitter-share-button" data-via="atlantageek">Tweet</a> <g:plusone size="medium"></g:plusone></h5>
+        </div>
+    </div>X
+
+    
+    <div class="row">	
+        <div class="span7 columns">    
+            <h2>Comments Section</h2>
+            <p>Feel free to comment on the post but keep it clean and on topic.</p>	
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                var disqus_shortname = 'atlantageek';
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </div>
+    
+    
+    <!-- Twitter -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+    <!-- Google + -->
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+</div>
+    
+
+                </div>
+                <div class="span4 columns">
+                     <h2>About Me</h2>
+<p>
+    <img src="http://www.gravatar.com/avatar/2eff6901bd6599cd9a6f808a2a960b46.png" alt="Tommie Jones" title="Follow me on Twitter @atlantageek"  class="img-rounded floatLeft" />
+ Software Development for Linux/Unix since 1995. I've done everything from Perl,C/C++,Java,Flash,php, ruby and currently node.js. Always interested in pushing technology  one step further than expected.
+</p>					
+<p>
+    <h6>atlantageek.github.com</h6> <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=atlantageek&repo=atlantageek.github.com&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="80px" height="20px"></iframe>&nbsp;<iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=atlantageek&repo=atlantageek.github.com&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="98px" height="20px"></iframe>
+</p>
+<p>
+    <a href="https://twitter.com/atlantageek" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @atlantageek</a>
+</p>
+<p>
+    <ul class="buttons unstyled">
+        <li><a href="https://github.com/atlantageek" rel="me" class="social github" title="Go to github.com/atlantageek" target="_blank"></a></li>
+        <li><a href="http://www.twitter.com/atlantageek" rel="me" class="social twitter" title="Go to twitter.com/atlantageek" target="_blank"></a></li>
+        <li><a href="https://github.com/atlantageek/Feedback/issues/new" rel="me" class="social mail" title="Leave feedback for Tommie Jones"  target="_blank"></a></li>				
+    </ul>
+</p>
+
+                </div>
+                <div class="span4 columns hidden-phone hidden-tablet">
+                     
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+  <div class="container">
+	<p class="pull-right"> <a href="/2014/08/23/snmp-trap-listener-in-node3/" title="Previous Post: snmp-trap-listener-in-node-part3">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   </p>        
+	<p>Page last generated on October 10, 2014</p>
+	<p>If need be, <a href="https://github.com/atlantageek/Feedback/issues/new" title="Leave feedback for Tommie Jones"  target="_blank" >leave me some feedback</a>.</p>	
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>	
+  </div>
+</footer>
+
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'atlantageek';
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-256169-2']);
+  _gaq.push(['_setDomainName', '']);
+  _gaq.push(['_setAllowLinker', true]);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>
