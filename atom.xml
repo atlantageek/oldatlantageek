@@ -4,12 +4,62 @@
  <title>Tommie Jones</title>
  <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
  <link href="http://www.atlantageek.com/"/>
- <updated>2014-08-31T10:41:02-04:00</updated>
+ <updated>2014-10-10T21:43:24-04:00</updated>
  <id>http://www.atlantageek.com</id>
  <author>
    <name>Tommie Jones</name>
  </author>
  
+ 
+ <entry>
+   <title>Detecting the cadence of your client's data.</title>
+   <link href="http://www.atlantageek.com/2014/10/09/detecting-cadence/"/>
+   <updated>2014-10-09T00:00:00-04:00</updated>
+   <id>http://www.atlantageek.com/2014/10/09/detecting-cadence</id>
+   <content type="html">Often a SaaS company is dependent on the periodic data from its clients. Its challenging enough just to get your clients set up and sending data. However in the interest of client service and to predict that there is trouble you often want to detect when data delivery has being interrupted. This could either be something that broke but not identified yet or the client is planning on firing you and you may want to go on the offensive to win them back. Detecting interruptions is not that difficult except in the SaaS world you’re often playing a numbers game.  You have hundreds or thousands of clients. These clients could each have their own Cadence of data delivery (daily, weekly, monthly, every other tuesday.) So its difficult to identify when a client is late. 
+&lt;p&gt;
+I’ve seen a similar problem at work and we tried multiple solutions but only one allowed us to not have to scan hundreds of table rows and graphs to identify interruptions in data delivery. The most recent solution has had some success by calculating a score based on the predicted cadence and the amount of time its been since the last data delivery. 
+&lt;p&gt;
+Previous solutions attempted to show a graph so the user could see at a glance if a data delivery was late.  But this was error prone. Other attempts were made to classify clients as daily/weekly/monthly because these were the terms we used. . Thinking that tracking daily uploads would look something like this.
+&lt;p&gt;
+Daily: &lt;span class=&quot;bar&quot;&gt; 1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1 &lt;/span&gt;
+&lt;p&gt;
+Weekly: &lt;span class=&quot;bar&quot;&gt; 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0, 1,0,0,0,0,0,0&lt;/span&gt;
+&lt;p&gt;
+Monthly:&lt;span class=&quot;bar&quot;&gt; 1,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0&lt;/span&gt;
+&lt;p&gt;
+
+But the data was never this clean. Days would be &lt;br&gt;skipped
+&lt;span class=&quot;bar&quot;&gt; 1,1,1,0,1,0,0,1,1,0,1,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,1,1,0,0,0,0,1,1,1,0,0,1,1,0,0,1,0,0,1,0,1,1,1 &lt;/span&gt;
+or delayed &lt;span class=&quot;bar&quot;&gt; 1,1,1,1,0,1,0,1,1,1,0,0,1,1,1,1,1,1,1,0,0,1,1,1,1,0,1,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,0,1,0,1,1,1,1,0,0,1,1,1,1,0,0 &lt;/span&gt;
+or both &lt;span class=&quot;bar&quot;&gt; 1,1,0,1,0,1,0,1,0,1,0,0,1,1,1,0,1,1,1,0,0,1,0,1,1,0,1,0,1,1,0,0,1,0,0,1,1,0,0,1,0,0,1,0,1,1,0,1,0,1,0,0,0,0,0,1,1,1,1,0,0 &lt;/span&gt;
+&lt;p&gt;
+And few of our clients were sending data this often. Most sent data weekly, but not necessarily on the same day of the week.
+ &lt;span class=&quot;bar&quot;&gt; 1,0,0,0,0,0,0, 0,0,1,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,1, 1,0,0,1,0,0,0, 0,0,1,0,0,0,0, 0,0,0,1,0,0,0, 0,1,0,0,0,0,0&lt;/span&gt;
+&lt;p&gt;
+Eventually we realized that each client had its own cadency and its own level of consistency. We needed a way to identify a client&#39;s cadence and consistency. Then use those number to determine if the current gap is normal or an anomoly. &lt;p&gt; 
+We had data. We knew on what days the client sent us the data. We could identify the average and standard deviation of how long a client would go without sending us data. &lt;br&gt;
+
+So with this method I can calculate the number of standard deviations the gap for that paticular day. This chart is looking back over time with the  most recent data points being to the most right.
+&lt;span class=&quot;composite&quot;&gt; 1,0,0,0,0,0,0, 0,0,1,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,1, 1,0,0,1,0,0,0, 0,0,1,0,0,0,0, 0,0,0,1,0,0,0, 0,1,0,0,0,0,0&lt;/span&gt; Whenever the blue line crossed went above 1.0 then that means the current gap was larger than 85% of the previous gaps.  In our usage we contact the client when the standard deviation hits 2. This means the gap is 97% larger. Sorting the list of clients by this table gives us an idea of which clients need to be contacted.&lt;p&gt;
+
+After using the report for 3 months it has been reasonably successful. Our client service represenatves are rarely blindsided by calls from clients asking why isnt new data appearing in their accounts. In actuality since we often cal the client we&#39;re finding that roughly 50% of the time the client knows their data transfer is down and the other 50% of the time they did not realize that they had stopped sending us data. &lt;p&gt;
+
+Of course this only adds one dimension. There are requests to add data volume to the score. And customer&#39;s whose cadence stretches across a period of a year are difficult to predict. We also have to be careful with new clients who we don&#39;t have any historical data with. However this report provides the confidence in that our existing client base is covered so we can spend more time getting our new clients brought into our system.
+
+    &lt;script type=&quot;text/javascript&quot;&gt;
+    $(function() {
+
+        /* Use &#39;html&#39; instead of an array of values to pass options 
+        to a sparkline with data in the tag */
+        $(&#39;.bar&#39;).sparkline(&#39;html&#39;, {type: &#39;bar&#39;} );
+        $(&#39;.composite&#39;).sparkline(&#39;html&#39;, {type: &#39;tristate&#39;} );
+        $(&#39;.composite&#39;).sparkline([-1,-0.85,-0.7,-0.55,-0.4,-0.25,-0.1, 0,0.15,0.3,-1.0,-0.85,-0.7,-0.55, -1.0,-0.85,-0.7,-0.55,-0.4,-0.25,-0.1, 0,0.15,0.3,0.45,0.6,0.75,-1.0, -1.0,-0.85,-0.7,-1,-0.85,-0.7,-0.55, -0.4,-0.25,-1.0,-0.85,-0.7,-0.55,-0.40, -0.25,-0.1,0,-1.0,-0.85,-0.7,-0.55, -0.4,-1.0,-0.85,-0.70,-0.55,-0.4,-0.25], {type: &#39;line&#39;, composite: true, fillColor: null } );
+    });
+    &lt;/script&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>snmp-trap-listener-in-node-part3</title>

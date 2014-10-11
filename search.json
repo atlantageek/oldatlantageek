@@ -1,6 +1,19 @@
 [
   
     {
+  "title"    : "Detecting the cadence of your client's data.",
+  "summary"  : "",
+  "category" : "",
+  "tags"     : ["node.js", null],
+  "url"      : "http://www.atlantageek.com/2014/10/09//",
+  "date"     : {
+    "day"   : "09",
+    "month" : "October",
+    "year"  : "2014"
+  }
+},
+  
+    {
   "title"    : "snmp-trap-listener-in-node-part3",
   "summary"  : "",
   "category" : "",
