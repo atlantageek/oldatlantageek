@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="fuelux" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <title>Detecting Seasonality</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Technical Web Development Blog">
+    <meta name="author" content="Garry Welding">
+    <script src="/js/all.js" type="text/javascript"></script>
+	<link href="/css/all.css" rel="stylesheet">	
+	
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+  </head>
+  <body data-spy="scroll" data-target=".subnav" data-offset="50">
+    <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="http://www.atlantageek.com">Atlantageek</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="">
+                        <a href="http://www.atlantageek.com"><i class="icon-home"></i> Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-list"></i> Projects <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class=""><a href="/projects/yield-curver" 
+title="Yield Curve" target="_blank" target="new">Interactive Yield Curve in javascript</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/-lcdproc-client-node" title="lcdproc-client for node.js" target="_blank">LCDproc client for node.js.</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/websocketsa" title="take me to the WebSocket SpectrumAnalyzer pageithub page" target="_blank">WiSpy node.js UI</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/mysql-array-functions" title="Mysql Array functions" target="_blank">Mysql Array user defined functions.</a></li>
+                            <li class=""><a href="http://atlantageek.com/joust" title="Joust Game">Joust Game</a></li>
+                        </ul>
+                    </li>
+                    <li id="search" class="search hidden-phone hidden-tablet">
+                        <span class="icon search"></span>
+                        <input type="text" placeholder="search">
+                        <i id="close" class="icon-remove"></i>
+                        <ol id="search-results" class="dropdown-menu">
+                        </ol>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container">
+        <div class="content">
+            <div class="row">
+                <div class="span7 columns">
+                    <div class="content">    
+    <div class="row">	
+        <div class="span7 column">
+            <h1>Detecting Seasonality</h1>
+        </div>
+    </div>
+    
+    <div class="row">	
+        <div class="span7 columns">
+            <h1>Automated way to detect Seasonality</h1>
+
+<p>When working with real-world data its obvious that data does not arrive in the smooth consistent nature that your linear regression textbook suggested. Data comes in fits and starts. It comes only once a week or 3 days a week. Its sent at 11:55 PM and in the process crosses the day boundary. It reacts to holidays either taking them off or doubling in quantity. This makes forecasting and anomoly detection at the large scale difficult but not impossible.</p>
+
+<p>In the previous <a href="http://atlantageek.com/2014/10/09/detecting-cadence/">article</a> we discussed how to identify when data is not sent by detecting its cadence. My current project has 1000s of data streams delivered every month and we needed to identify when the stream does is not sent. However data being sent is not the only problem. Another issue is that not all the data has been sent. To identify anomolies in the data streams we need to know how much data is sent how often.  We need to be able to say that 'data stream 1 sends 7,000 records every week' or 'data stream 2 sends 1000 records every 2 weeks' even if the majority of those records are sent on the last friday.</p>
+
+<p>To make these type of statements we need to:
+1. Identify the data cycle. (week, month, bi-weekly)
+2. aggregate the data up to the cycle and base the forecast on the cycle type period.</p>
+
+<p>The rest of this post will focus on item 1. Below is 200 days of data for one of the streams.</p>
+
+<p><img src="/img/salesdata.png" alt="sales data" /></p>
+
+<p>If you look closely you would identify that this data comes in weekly cycles but almost every day some data comes in. How can we identify programatically the cycle of the data. The approach taken here is to use correlate between the current data and lagged data. Lagged data being data shifted by days. To calculate this we use the following R script.</p>
+
+<pre><code>    data &lt;- read.csv("a.csv")
+
+    lagpad &lt;- function(x, k=1) {
+            i&lt;-is.vector(x)
+            if(is.vector(x)) x&lt;-matrix(x) else x&lt;-matrix(x,nrow(x))
+            if(k&gt;0) {
+                    x &lt;- rbind(matrix(rep(NA, k*ncol(x)),ncol=ncol(x)),
+                     matrix(x[1:(nrow(x)-k),], ncol=ncol(x)))
+            }
+            else {
+                    x &lt;- rbind(matrix(x[(-k+1):(nrow(x)),],
+                     ncol=ncol(x)),matrix(rep(NA, -k*ncol(x)),ncol=ncol(x)))
+            }
+            if(i) x[1:length(x)] else x
+    }
+
+    c &lt;- c() #Initialize Correlation vector.
+
+    #Try lagging from 1 to 32 days and see which has the strongest correlation.
+    for (i in 1:32) 
+    {
+            c[i] &lt;- cor(data$val, lagpad(data$val,i), use="complete.obs")
+    }
+    barplot(c)
+</code></pre>
+
+<p>Here we are looping thrugh lags 1-32 and correlating the data with each lag.  A single correlation value is generated for each lag value. We can plot those below</p>
+
+<p><img src="/img/correlation.png" alt="correlation" /></p>
+
+<p>The image shows that at 7,14,21,28 day lags are the strongest correlation.  If data is strongly correlated every 7 days then multiples of 7  would be strongly correlated too. This presents another problem.  Looking at this graph you would see the 7 day cycle and the slightly stronger correlation at the 14 day mark could be considered an accident. However because of this we cant just take the largest value for the cycle. The lower factors should get precedence over the larger multiples even if the multiples have higher correlation.</p>
+
+<p>The correlation can be adjusted by subtracting out the factors correlation. For instance how much would be left if the 7 day correlation was subtracted out of the 14 day correlation. We will clean up the graph by zeroing out the negative correlations also. We append the following to the previous script to get an adjusted dataset.</p>
+
+<pre><code> adj_corr &lt;- c
+ for (i in 1:length(c))
+ {
+   if (c[i] &gt; 0) {
+     factors &lt;- unique(factorize(i))
+      print(factors)
+     for (j in 1:length(factors))
+     {
+       k = as.numeric(factors[j])
+       if (i != k)
+       {
+         if ((adj_corr[i] &lt; adj_corr[k]) &amp;&amp; (adj_corr[k] &gt; 0 ) )
+         {
+           adj_corr[i] &lt;- 0
+         }
+         else
+         {
+           adj_corr[i] &lt;- adj_corr[i] - adj_corr[k]
+         }
+       }
+     }
+   }
+   else
+   {
+     adj_corr[i] = 0
+   }
+ }
+</code></pre>
+
+<p>This results in the following adjusted correlation</p>
+
+<p><img src="/img/adj_correlation.png" alt="correlation" /></p>
+
+<p>The correlation for 14,21 and 28 days is much weaker when we take the 7 day correlation out.</p>
+
+<p>Based on this graph we realized that we need to aggregate up 7 days of data to generate forecasts. This can be used to identify bi-weekly cycles or twice a week cycles or once a quarter data if you have that much data.</p>
+
+<p>This was a simple case but what does a monthly cycle look like.</p>
+
+<p><img src="/img/monthly_correlation.png" alt="correlation" /></p>
+
+<p>In this case the data is send on the first of every month.</p>
+
+<p>Here we can see that the uneven number of days in a month are causing issues. And without a single strong correlation like the data will vary wildly. For example if we aggregate up at the 30 day time period. There will be some periods where we will go 30 days without any data.  And at least 1 30 day period (the one that contains feburary) a year will have twice as much data correlated to it.If we increas the period by 1 day then 6 periods a year will have twice as much data.</p>
+
+<p>If your decisions are on a daily basis and you can handle this sort of jumps in your forecast then your algorithm needs to be calendar aware.</p>
+
+<p>Other than monthly data this is a good technique to identify aggregation periods automatically.</p>
+
+        </div>
+    </div>
+    
+    <div class="pager hidden-phone hidden-tablet">
+        <a class="prev" href="/2014/10/09/detecting-cadence/" title="Previous Post: Detecting the cadence of your client's data."><i class="icon-arrow-left icon-white"></i></a>
+        <a class="next" href="" title="Previous Post: "><i class="icon-arrow-right icon-white"></i></a>
+    </div>
+    
+    <div class="row">	
+        <div class="span7 column">
+              <i class="icon-calendar"></i> November  1, 2014| <i class="icon-tags"></i> Tags : <a href="/tags/R" rel="tooltip" title="View pages tagged with &quot;R&quot;"><span class="label label-info">R</span></a>   
+              <a href="https://twitter.com/share" class="twitter-share-button" data-via="atlantageek">Tweet</a> <g:plusone size="medium"></g:plusone></h5>
+        </div>
+    </div>X
+
+    
+    <div class="row">	
+        <div class="span7 columns">    
+            <h2>Comments Section</h2>
+            <p>Feel free to comment on the post but keep it clean and on topic.</p>	
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+                var disqus_shortname = 'atlantageek';
+
+                /* * * DON'T EDIT BELOW THIS LINE * * */
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        </div>
+    </div>
+    
+    
+    <!-- Twitter -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+    <!-- Google + -->
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+</div>
+    
+
+                </div>
+                <div class="span4 columns">
+                     <h2>About Me</h2>
+<p>
+    <img src="http://www.gravatar.com/avatar/2eff6901bd6599cd9a6f808a2a960b46.png" alt="Tommie Jones" title="Follow me on Twitter @atlantageek"  class="img-rounded floatLeft" />
+ Software Development for Linux/Unix since 1995. I've done everything from Perl,C/C++,Java,Flash,php, ruby and currently node.js. Always interested in pushing technology  one step further than expected.
+</p>					
+<p>
+    <h6>atlantageek.github.com</h6> <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=atlantageek&repo=atlantageek.github.com&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="80px" height="20px"></iframe>&nbsp;<iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=atlantageek&repo=atlantageek.github.com&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="98px" height="20px"></iframe>
+</p>
+<p>
+    <a href="https://twitter.com/atlantageek" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @atlantageek</a>
+</p>
+<p>
+    <ul class="buttons unstyled">
+        <li><a href="https://github.com/atlantageek" rel="me" class="social github" title="Go to github.com/atlantageek" target="_blank"></a></li>
+        <li><a href="http://www.twitter.com/atlantageek" rel="me" class="social twitter" title="Go to twitter.com/atlantageek" target="_blank"></a></li>
+        <li><a href="https://github.com/atlantageek/Feedback/issues/new" rel="me" class="social mail" title="Leave feedback for Tommie Jones"  target="_blank"></a></li>				
+    </ul>
+</p>
+
+                </div>
+                <div class="span4 columns hidden-phone hidden-tablet">
+                     
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+  <div class="container">
+	<p class="pull-right"> <a href="/2014/10/09/detecting-cadence/" title="Previous Post: Detecting the cadence of your client's data.">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   </p>        
+	<p>Page last generated on November  7, 2014</p>
+	<p>If need be, <a href="https://github.com/atlantageek/Feedback/issues/new" title="Leave feedback for Tommie Jones"  target="_blank" >leave me some feedback</a>.</p>	
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>	
+  </div>
+</footer>
+
+<script type="text/javascript">
+/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+var disqus_shortname = 'atlantageek';
+
+/* * * DON'T EDIT BELOW THIS LINE * * */
+(function () {
+    var s = document.createElement('script'); s.async = true;
+    s.type = 'text/javascript';
+    s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+}());
+</script>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-256169-2']);
+  _gaq.push(['_setDomainName', '']);
+  _gaq.push(['_setAllowLinker', true]);
+  
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>
