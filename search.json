@@ -1,6 +1,19 @@
 [
   
     {
+  "title"    : "Detecting Seasonality",
+  "summary"  : "",
+  "category" : "",
+  "tags"     : ["R", null],
+  "url"      : "http://www.atlantageek.com/2014/11/01//",
+  "date"     : {
+    "day"   : "01",
+    "month" : "November",
+    "year"  : "2014"
+  }
+},
+  
+    {
   "title"    : "Detecting the cadence of your client's data.",
   "summary"  : "",
   "category" : "",

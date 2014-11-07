@@ -99,7 +99,7 @@ We had data. We knew on what days the client sent us the data. We could identify
 So with this method I can calculate the number of standard deviations the gap for that paticular day. This chart is looking back over time with the  most recent data points being to the most right.
 <span class="composite"> 1,0,0,0,0,0,0, 0,0,1,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,1, 1,0,0,1,0,0,0, 0,0,1,0,0,0,0, 0,0,0,1,0,0,0, 0,1,0,0,0,0,0</span> Whenever the blue line crossed went above 1.0 then that means the current gap was larger than 85% of the previous gaps.  In our usage we contact the client when the standard deviation hits 2. This means the gap is 97% larger. Sorting the list of clients by this table gives us an idea of which clients need to be contacted.<p>
 
-After using the report for 3 months it has been reasonably successful. Our client service represenatves are rarely blindsided by calls from clients asking why isnt new data appearing in their accounts. In actuality since we often cal the client we're finding that roughly 50% of the time the client knows their data transfer is down and the other 50% of the time they did not realize that they had stopped sending us data. <p>
+After 3 months the report has been reasonably successful. Our customer service represenatves are rarely blindsided by calls from clients asking why isnt new data appearing in their accounts. In actuality since we often cal the client we're finding that roughly 50% of the time the client knows their data transfer is down and the other 50% of the time they did not realize that they had stopped sending us data. <p>
 
 Of course this only adds one dimension. There are requests to add data volume to the score. And customer's whose cadence stretches across a period of a year are difficult to predict. We also have to be careful with new clients who we don't have any historical data with. However this report provides the confidence in that our existing client base is covered so we can spend more time getting our new clients brought into our system.
 
@@ -120,7 +120,7 @@ Of course this only adds one dimension. There are requests to add data volume to
     
     <div class="pager hidden-phone hidden-tablet">
         <a class="prev" href="/2014/08/23/snmp-trap-listener-in-node3/" title="Previous Post: snmp-trap-listener-in-node-part3"><i class="icon-arrow-left icon-white"></i></a>
-        <a class="next" href="" title="Previous Post: "><i class="icon-arrow-right icon-white"></i></a>
+        <a class="next" href="/2014/11/01/detecting-seasonality/" title="Previous Post: Detecting Seasonality"><i class="icon-arrow-right icon-white"></i></a>
     </div>
     
     <div class="row">	
@@ -198,8 +198,8 @@ Of course this only adds one dimension. There are requests to add data volume to
 
     <footer class="footer">
   <div class="container">
-	<p class="pull-right"> <a href="/2014/08/23/snmp-trap-listener-in-node3/" title="Previous Post: snmp-trap-listener-in-node-part3">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   </p>        
-	<p>Page last generated on October 10, 2014</p>
+	<p class="pull-right"> <a href="/2014/08/23/snmp-trap-listener-in-node3/" title="Previous Post: snmp-trap-listener-in-node-part3">&laquo; Previous Blog Post</a> 	  |  <a href="#">Back to top</a>  |   	<a href="/2014/11/01/detecting-seasonality/" title="Next Post: Detecting Seasonality">Next Blog Post &raquo; </a> 	 </p>        
+	<p>Page last generated on November  7, 2014</p>
 	<p>If need be, <a href="https://github.com/atlantageek/Feedback/issues/new" title="Leave feedback for Tommie Jones"  target="_blank" >leave me some feedback</a>.</p>	
 	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>	
   </div>

@@ -4,12 +4,118 @@
  <title>Tommie Jones</title>
  <link href="http://www.atlantageek.com/atom.xml" rel="self"/>
  <link href="http://www.atlantageek.com/"/>
- <updated>2014-10-10T21:43:24-04:00</updated>
+ <updated>2014-11-07T10:55:06-05:00</updated>
  <id>http://www.atlantageek.com</id>
  <author>
    <name>Tommie Jones</name>
  </author>
  
+ 
+ <entry>
+   <title>Detecting Seasonality</title>
+   <link href="http://www.atlantageek.com/2014/11/01/detecting-seasonality/"/>
+   <updated>2014-11-01T00:00:00-04:00</updated>
+   <id>http://www.atlantageek.com/2014/11/01/detecting-seasonality</id>
+   <content type="html">&lt;h1&gt;Automated way to detect Seasonality&lt;/h1&gt;
+
+&lt;p&gt;When working with real-world data its obvious that data does not arrive in the smooth consistent nature that your linear regression textbook suggested. Data comes in fits and starts. It comes only once a week or 3 days a week. Its sent at 11:55 PM and in the process crosses the day boundary. It reacts to holidays either taking them off or doubling in quantity. This makes forecasting and anomoly detection at the large scale difficult but not impossible.&lt;/p&gt;
+
+&lt;p&gt;In the previous &lt;a href=&quot;http://atlantageek.com/2014/10/09/detecting-cadence/&quot;&gt;article&lt;/a&gt; we discussed how to identify when data is not sent by detecting its cadence. My current project has 1000s of data streams delivered every month and we needed to identify when the stream does is not sent. However data being sent is not the only problem. Another issue is that not all the data has been sent. To identify anomolies in the data streams we need to know how much data is sent how often.  We need to be able to say that &#39;data stream 1 sends 7,000 records every week&#39; or &#39;data stream 2 sends 1000 records every 2 weeks&#39; even if the majority of those records are sent on the last friday.&lt;/p&gt;
+
+&lt;p&gt;To make these type of statements we need to:
+1. Identify the data cycle. (week, month, bi-weekly)
+2. aggregate the data up to the cycle and base the forecast on the cycle type period.&lt;/p&gt;
+
+&lt;p&gt;The rest of this post will focus on item 1. Below is 200 days of data for one of the streams.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/salesdata.png&quot; alt=&quot;sales data&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you look closely you would identify that this data comes in weekly cycles but almost every day some data comes in. How can we identify programatically the cycle of the data. The approach taken here is to use correlate between the current data and lagged data. Lagged data being data shifted by days. To calculate this we use the following R script.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    data &amp;lt;- read.csv(&quot;a.csv&quot;)
+
+    lagpad &amp;lt;- function(x, k=1) {
+            i&amp;lt;-is.vector(x)
+            if(is.vector(x)) x&amp;lt;-matrix(x) else x&amp;lt;-matrix(x,nrow(x))
+            if(k&amp;gt;0) {
+                    x &amp;lt;- rbind(matrix(rep(NA, k*ncol(x)),ncol=ncol(x)),
+                     matrix(x[1:(nrow(x)-k),], ncol=ncol(x)))
+            }
+            else {
+                    x &amp;lt;- rbind(matrix(x[(-k+1):(nrow(x)),],
+                     ncol=ncol(x)),matrix(rep(NA, -k*ncol(x)),ncol=ncol(x)))
+            }
+            if(i) x[1:length(x)] else x
+    }
+
+    c &amp;lt;- c() #Initialize Correlation vector.
+
+    #Try lagging from 1 to 32 days and see which has the strongest correlation.
+    for (i in 1:32) 
+    {
+            c[i] &amp;lt;- cor(data$val, lagpad(data$val,i), use=&quot;complete.obs&quot;)
+    }
+    barplot(c)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we are looping thrugh lags 1-32 and correlating the data with each lag.  A single correlation value is generated for each lag value. We can plot those below&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/correlation.png&quot; alt=&quot;correlation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The image shows that at 7,14,21,28 day lags are the strongest correlation.  If data is strongly correlated every 7 days then multiples of 7  would be strongly correlated too. This presents another problem.  Looking at this graph you would see the 7 day cycle and the slightly stronger correlation at the 14 day mark could be considered an accident. However because of this we cant just take the largest value for the cycle. The lower factors should get precedence over the larger multiples even if the multiples have higher correlation.&lt;/p&gt;
+
+&lt;p&gt;The correlation can be adjusted by subtracting out the factors correlation. For instance how much would be left if the 7 day correlation was subtracted out of the 14 day correlation. We will clean up the graph by zeroing out the negative correlations also. We append the following to the previous script to get an adjusted dataset.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; adj_corr &amp;lt;- c
+ for (i in 1:length(c))
+ {
+   if (c[i] &amp;gt; 0) {
+     factors &amp;lt;- unique(factorize(i))
+      print(factors)
+     for (j in 1:length(factors))
+     {
+       k = as.numeric(factors[j])
+       if (i != k)
+       {
+         if ((adj_corr[i] &amp;lt; adj_corr[k]) &amp;amp;&amp;amp; (adj_corr[k] &amp;gt; 0 ) )
+         {
+           adj_corr[i] &amp;lt;- 0
+         }
+         else
+         {
+           adj_corr[i] &amp;lt;- adj_corr[i] - adj_corr[k]
+         }
+       }
+     }
+   }
+   else
+   {
+     adj_corr[i] = 0
+   }
+ }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This results in the following adjusted correlation&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/adj_correlation.png&quot; alt=&quot;correlation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The correlation for 14,21 and 28 days is much weaker when we take the 7 day correlation out.&lt;/p&gt;
+
+&lt;p&gt;Based on this graph we realized that we need to aggregate up 7 days of data to generate forecasts. This can be used to identify bi-weekly cycles or twice a week cycles or once a quarter data if you have that much data.&lt;/p&gt;
+
+&lt;p&gt;This was a simple case but what does a monthly cycle look like.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/monthly_correlation.png&quot; alt=&quot;correlation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this case the data is send on the first of every month.&lt;/p&gt;
+
+&lt;p&gt;Here we can see that the uneven number of days in a month are causing issues. And without a single strong correlation like the data will vary wildly. For example if we aggregate up at the 30 day time period. There will be some periods where we will go 30 days without any data.  And at least 1 30 day period (the one that contains feburary) a year will have twice as much data correlated to it.If we increas the period by 1 day then 6 periods a year will have twice as much data.&lt;/p&gt;
+
+&lt;p&gt;If your decisions are on a daily basis and you can handle this sort of jumps in your forecast then your algorithm needs to be calendar aware.&lt;/p&gt;
+
+&lt;p&gt;Other than monthly data this is a good technique to identify aggregation periods automatically.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Detecting the cadence of your client's data.</title>
@@ -43,7 +149,7 @@ We had data. We knew on what days the client sent us the data. We could identify
 So with this method I can calculate the number of standard deviations the gap for that paticular day. This chart is looking back over time with the  most recent data points being to the most right.
 &lt;span class=&quot;composite&quot;&gt; 1,0,0,0,0,0,0, 0,0,1,0,0,0,0, 1,0,0,0,0,0,0, 0,0,0,0,0,0,1, 1,0,0,1,0,0,0, 0,0,1,0,0,0,0, 0,0,0,1,0,0,0, 0,1,0,0,0,0,0&lt;/span&gt; Whenever the blue line crossed went above 1.0 then that means the current gap was larger than 85% of the previous gaps.  In our usage we contact the client when the standard deviation hits 2. This means the gap is 97% larger. Sorting the list of clients by this table gives us an idea of which clients need to be contacted.&lt;p&gt;
 
-After using the report for 3 months it has been reasonably successful. Our client service represenatves are rarely blindsided by calls from clients asking why isnt new data appearing in their accounts. In actuality since we often cal the client we&#39;re finding that roughly 50% of the time the client knows their data transfer is down and the other 50% of the time they did not realize that they had stopped sending us data. &lt;p&gt;
+After 3 months the report has been reasonably successful. Our customer service represenatves are rarely blindsided by calls from clients asking why isnt new data appearing in their accounts. In actuality since we often cal the client we&#39;re finding that roughly 50% of the time the client knows their data transfer is down and the other 50% of the time they did not realize that they had stopped sending us data. &lt;p&gt;
 
 Of course this only adds one dimension. There are requests to add data volume to the score. And customer&#39;s whose cadence stretches across a period of a year are difficult to predict. We also have to be careful with new clients who we don&#39;t have any historical data with. However this report provides the confidence in that our existing client base is covered so we can spend more time getting our new clients brought into our system.
 
