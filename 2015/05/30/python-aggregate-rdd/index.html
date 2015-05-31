@@ -1,0 +1,231 @@
+<html class="fuelux" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <title>Python Spark Aggregate function</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Technical Web Development Blog">
+    <meta name="author" content="Tommie Jones">
+    <script src="/js/all.js" type="text/javascript"></script>
+	<link href="/css/all.css" rel="stylesheet">	
+	
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/favicon.ico">
+  </head>
+  <body data-spy="scroll" data-target=".subnav" data-offset="50">
+    <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="http://www.atlantageek.com">Atlantageek</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="">
+                        <a href="http://www.atlantageek.com"><i class="icon-home"></i> Home</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="icon-list"></i> Projects <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class=""><a href="/projects/yield-curver" 
+title="Yield Curve" target="_blank" target="new">Interactive Yield Curve in javascript</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/-lcdproc-client-node" title="lcdproc-client for node.js" target="_blank">LCDproc client for node.js.</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/websocketsa" title="take me to the WebSocket SpectrumAnalyzer pageithub page" target="_blank">WiSpy node.js UI</a></li>
+                            <li class=""><a href="https://github.com/atlantageek/mysql-array-functions" title="Mysql Array functions" target="_blank">Mysql Array user defined functions.</a></li>
+                            <li class=""><a href="http://atlantageek.com/joust" title="Joust Game">Joust Game</a></li>
+                        </ul>
+                    </li>
+                    <li id="search" class="search hidden-phone hidden-tablet">
+                        <span class="icon search"></span>
+                        <input type="text" placeholder="search">
+                        <i id="close" class="icon-remove"></i>
+                        <ol id="search-results" class="dropdown-menu">
+                        </ol>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container">
+        <div class="content">
+            <div class="row">
+                <div class="span7 columns">
+                    <div class="content">    
+    <div class="row">	
+        <div class="span7 column">
+            <h1>Python using Sparks Aggregate function example.</h1>
+        </div>
+    </div>
+    
+  <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Aggregate-Function">Aggregate Function<a class="anchor-link" href="#Aggregate-Function">&#182;</a></h1>
+</div>
+</div>
+</div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>aggregate(zeroValue, seqOp, combOp)</p>
+<p>Aggregate lets you take an RDD and generate a single value that is of a different type than what was stored in the original RDD.</p>
+<p>It does this with three parameters. A zeroValue (or initial value) in the format of the result.  A seqOp function that given 
+the resulting type and an individual element in the RDD will merge the RDD element into the resulting object.</p>
+<p>The combOb merges two resulting objects together.</p>
+<p>Consider an example.  We want to take a list of records about people and then we want to sum up their ages and count them.
+So for this example the type in the RDD will be a Dictionary in the format of {name: NAME, age:AGE, gender:GENDER}. The result type
+will be a tuple that looks like so (Sum of Ages, Count)</p>
+<p>Lets first generate a peopleRDD with 5 people</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">people</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">people</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;Bob&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span><span class="mi">45</span><span class="p">,</span><span class="s">&#39;gender&#39;</span><span class="p">:</span><span class="s">&#39;M&#39;</span><span class="p">})</span>
+<span class="n">people</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;Gloria&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span><span class="mi">43</span><span class="p">,</span><span class="s">&#39;gender&#39;</span><span class="p">:</span><span class="s">&#39;F&#39;</span><span class="p">})</span>
+<span class="n">people</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;Albert&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span><span class="mi">28</span><span class="p">,</span><span class="s">&#39;gender&#39;</span><span class="p">:</span><span class="s">&#39;M&#39;</span><span class="p">})</span>
+<span class="n">people</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;Laura&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span><span class="s">&#39;gender&#39;</span><span class="p">:</span><span class="s">&#39;F&#39;</span><span class="p">})</span>
+<span class="n">people</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;Simone&#39;</span><span class="p">,</span> <span class="s">&#39;age&#39;</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span><span class="s">&#39;gender&#39;</span><span class="p">:</span><span class="s">&#39;T&#39;</span><span class="p">})</span>
+<span class="n">peopleRdd</span><span class="o">=</span><span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">people</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">peopleRdd</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we need to create the seqOp. This takes an object of the rdd type and merge it into a record of the result type. Or another way to say this is add the age to the first element of the resulting tuple and add 1 for the second element of the tuple</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[25]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">seqOp</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="s">&#39;age&#39;</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we write an operation to merge two resulting tuple. </p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[26]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">combOp</span> <span class="o">=</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Run the function</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[27]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">peopleRdd</span><span class="o">.</span><span class="n">aggregate</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">seqOp</span><span class="p">,</span> <span class="n">combOp</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">
+    Out[27]:</div>
+
+
+<div class="output_text output_subarea output_pyout">
+<pre>
+(167, 5)
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here is the result. So why is this convoluted? The combOp seems unecessary but in the map reduce world of spark you need that seperate operation. Realize that these functions are going to be parallelized. peopleRDD is partitioned up. And dependending on its source and method of converting the data to an RDD each row could be on its own partition.</p>
+<p>So lets backup and define a few things</p>
+<p>partition - A partition is how the RDD is split up.  If our RDD was 100,000 records we could have as many as 100,000 partitions or only 1 partition depending on how we created the RDD. </p>
+<p>task - A small job that operates on a single partition. A single task can run on only one machine at a time and can operate on only one partiton at a time. </p>
+<p>For the aggregate function the seqOp will run once for every record in a partition. This will result in a resulting object for each partition.  The combOp will be used to merge all the resulting objects together.</p>
+</div>
+</div>
+</div>
+    </div>
+  </div>
+</body>
+</html>
